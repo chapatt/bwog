@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "commander": "^13.1.0",
+    "eta": "^3.5.0",
+    "html-prettify": "^1.0.7"
+  }
+}

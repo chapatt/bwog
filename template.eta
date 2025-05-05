@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>music</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            width: 100%;
+            max-width: 35em;
+            margin: 0 auto;
+            padding: 1em;
+            box-sizing: border-box;
+        }
+
+        body > .title {
+            font-style: oblique;
+            display: block;
+        }
+
+        body > .title > svg {
+            width: 70%;
+        }
+
+        form.editor textarea {
+            width: 100%;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        form.editor input[type="submit"] {
+            float: right;
+        }
+
+        a {
+            color: #099;
+        }
+
+        ol.posts {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+            clear: both;
+        }
+
+        ol.posts > li .timestamp {
+            margin-left: -1em;
+            font-size: 0.7em;
+        }
+
+        ol.posts > li .text a {
+            line-break: anywhere;
+        }
+
+        ol.posts > li .song, ol.posts > li .album {
+            font-style: italic;
+        }
+
+        ol.posts > li > .playlist {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .pagination {
+            text-align: right;
+        }
+
+        .pagination > a:not(:first-child) {
+            margin-left: 1em;
+        }
+
+        .pagination.top {
+            transform: translateY(-100%);
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <a class="title" href="./">
+        <svg viewBox="0 0 100 30" xmlns="http://www.w3.org/2000/svg">
+            <path style="fill: #ee009a;" d="m 6,0
+                L 100,0
+                L 94,30
+                L 0,30 z" />
+            <text style="fill: white; font-size: 16px; font-style: oblique" x="5" y="25">music</text>
+        </svg>
+    </a>
+    <p class="pagination top">
+        <% if (it.prevPage !== null) { %>
+            <a href="<%= it.prevPage %>">← prev</a>
+        <% } %>
+        <% if (it.nextPage !== null) { %>
+            <a href="<%= it.nextPage %>">next →</a>
+        <% } %>
+    </p>
+    <form class="editor" action="/post">
+        <textarea name="text" rows="3"></textarea>
+        <textarea name="tracks" rows="1"></textarea>
+        <input type="submit" value="post">
+    </form>
+    <ol class="posts">
+        <% it.posts.forEach(function(post) { %>
+            <li>
+                <time class="timestamp" datetime="<%= post.createdAt %>">
+                <%= (new Date(Date.parse(post.createdAt))).toLocaleDateString() %>
+                (<%= (new Date(Date.parse(post.createdAt))).toLocaleTimeString([], {timeStyle: 'short'}).replace(/\s/g, '').toLowerCase() %>)
+                </time>
+                <div class="text">
+                    <p><%~ post.text.replace(/(https:\/\/\S*)/g, '<a href="$1">$1</a>').replaceAll('\n', '<br />') %></p>
+                </div>
+                <% if (post.type === 'song') { %>
+                    <p class="song"><span class="artist"><%= post.artist%></span> - <span class="title"><%= post.title %></span></p>
+                <% } else if (post.type === 'album') { %>
+                    <p class="album"><span class="artist"><%= post.artist%></span> - <span class="title"><%= post.title %></span></p>
+                <% } else if (post.type === 'playlist') { %>
+                    <ol class="playlist">
+                        <% post.tracks.forEach(function(song) { %>
+                            <li class="song"><span class="artist"><%= song.artist %></span> - <span class="title"><%= song.title %></span></li>
+                        <% }) %>
+                    </ol>
+                <% } %>
+            </li>
+        <% }) %>
+    </ol>
+    <p class="pagination">
+        <% if (it.prevPage !== null) { %>
+            <a href="<%= it.prevPage %>">← prev</a>
+        <% } %>
+        <% if (it.nextPage !== null) { %>
+            <a href="<%= it.nextPage %>">next →</a></p>
+        <% } %>
+    </p>
+</body>
+</html>
