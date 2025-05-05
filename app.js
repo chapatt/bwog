@@ -16,4 +16,6 @@ app.use(session({
 app.use(passport.authenticate('session'));
 app.use('/', authRouter);
 app.use('/', editorRouter);
-app.listen(80);
+app.listen(3000, error => {
+    console.error(error);
+});

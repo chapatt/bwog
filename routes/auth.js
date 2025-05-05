@@ -5,12 +5,12 @@ const GoogleStrategy = require('passport-google-oauth20');
 passport.use(new GoogleStrategy({
         clientID: process.env['GOOGLE_OAUTH_CLIENT_ID'],
         clientSecret: process.env['GOOGLE_OAUTH_CLIENT_SECRET'],
-        callbackURL: '/oauth2/redirect/google',
+        callbackURL: `https://${process.env['SITE_DOMAIN']}/oauth2/redirect/google`,
         scope: [ 'profile' ],
         state: true
     },
     function verify(accessToken, refreshToken, profile, cb) {
-        if (GOOGLE_OAUTH_AUTHORIZED_USER_ID === profile.id) {
+        if (process.env['GOOGLE_OAUTH_AUTHORIZED_USER_ID'] === profile.id) {
             cb(null, profile);
         } else {
             return cb(null, false);
