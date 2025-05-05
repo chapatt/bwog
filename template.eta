@@ -17,10 +17,11 @@
         body > .title {
             font-style: oblique;
             display: block;
+            width: 70%;
         }
 
         body > .title > svg {
-            width: 70%;
+            width: 100%;
         }
 
         form.editor textarea {
@@ -73,6 +74,8 @@
         .pagination.top {
             transform: translateY(-100%);
             margin: 0;
+            float: right;
+            display: inline-block;
         }
     </style>
     <script>
