@@ -40,7 +40,7 @@ router.get('/oauth2/redirect/google', passport.authenticate('google', {
     failureRedirect: '/login'
 }));
 
-router.post('/logout', function(req, res, next) {
+router.post('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
 });
