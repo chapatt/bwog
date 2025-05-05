@@ -138,7 +138,7 @@
             <a href="<%= it.prevPage %>">← prev</a>
         <% } %>
         <% if (it.nextPage !== null) { %>
-            <a href="<%= it.nextPage %>">next →</a></p>
+            <a href="<%= it.nextPage %>">next →</a>
         <% } %>
     </p>
 </body>
