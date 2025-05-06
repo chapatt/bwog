@@ -1,5 +1,8 @@
+const path = require("path");
 const express = require('express');
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
+
+const Generator = require(path.resolve(__dirname, '../generator.js'));
 
 const router = express.Router();
 
@@ -32,6 +35,10 @@ router.post('/post', ensureLoggedIn('/login'), (req, res) => {
 
     console.log(`user posted: ${req.user.name} <${req.user.email}>`);
     console.log(post);
+
+    const generator = new Generator();
+    const posts = require(process.env['SOURCE_JSON']);
+    generator.generate(posts, process.env['PUBLIC_PATH']);
     res.redirect('/');
 });
 
