@@ -6,26 +6,26 @@ passport.use(new GoogleStrategy({
         clientID: process.env['GOOGLE_OAUTH_CLIENT_ID'],
         clientSecret: process.env['GOOGLE_OAUTH_CLIENT_SECRET'],
         callbackURL: `https://${process.env['SITE_DOMAIN']}/oauth2/redirect/google`,
-        scope: [ 'profile' ],
+        scope: ['profile', 'email'],
         state: true
     },
-    function verify(accessToken, refreshToken, profile, cb) {
+    (accessToken, refreshToken, profile, cb) => {
         if (process.env['GOOGLE_OAUTH_AUTHORIZED_USER_ID'] === profile.id) {
-            cb(null, profile);
+            cb(null, {id: profile.id, name: profile.displayName, email: profile.emails[0].value});
         } else {
             return cb(null, false);
         }
     }
 ));
 
-passport.serializeUser(function(user, cb) {
-    process.nextTick(function() {
-        cb(null, {id: user.id, username: user.username, name: user.name});
+passport.serializeUser((user, cb) => {
+    process.nextTick(() => {
+        cb(null, {id: user.id, name: user.name, email: user.email});
     });
 });
 
-passport.deserializeUser(function(user, cb) {
-    process.nextTick(function() {
+passport.deserializeUser((user, cb) => {
+    process.nextTick(() => {
         return cb(null, user);
     });
 });
@@ -36,13 +36,28 @@ const router = express.Router();
 router.get('/login', passport.authenticate('google'));
 
 router.get('/oauth2/redirect/google', passport.authenticate('google', {
-    successReturnToOrRedirect: '/',
-    failureRedirect: '/login'
+    successReturnToOrRedirect: '/loginSuccess',
+    failureRedirect: '/loginFailure'
 }));
 
-router.post('/logout', function(req, res) {
-    req.logout();
+router.get('/loginSuccess', (req, res) => {
+    res.cookie('isAuthed', true);
     res.redirect('/');
+});
+
+router.get('/loginFailure', (req, res) => {
+    res.clearCookie('isAuthed');
+    res.redirect('/');
+});
+
+router.get('/logout', (req, res, next) => {
+    res.clearCookie('isAuthed');
+    req.logout(error => {
+        if (error) {
+            return next(error);
+        }
+        res.redirect('/');
+    });
 });
 
 module.exports = router;

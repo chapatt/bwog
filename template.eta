@@ -24,6 +24,10 @@
             width: 100%;
         }
 
+        #editor {
+            display: none;
+        }
+
         form.editor textarea {
             width: 100%;
             box-sizing: border-box;
@@ -86,6 +90,11 @@
                 const time = (new Date(Date.parse(datetime))).toLocaleTimeString([], {timeStyle: 'short'});
                 element.innerHTML = `${date} (${time})`;
             });
+
+            const isAuthed = document.cookie.split('; ').find((row) => row.startsWith('isAuthed='))?.split("=")[1] === 'true';
+            if (isAuthed) {
+                document.getElementById('editor').style.display = 'block';
+            }
         });
     </script>
 </head>
@@ -107,7 +116,7 @@
             <a href="<%= it.nextPage %>">next →</a>
         <% } %>
     </p>
-    <form class="editor" action="http://localhost/" method="POST">
+    <form id="editor" class="editor" action="./post" method="POST">
         <textarea name="text" rows="3"></textarea>
         <textarea name="tracks" rows="1"></textarea>
         <input type="submit" value="post">

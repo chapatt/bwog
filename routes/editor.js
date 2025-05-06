@@ -5,8 +5,9 @@ const ensureLoggedIn = ensureLogIn('/login');
 
 const router = express.Router();
 
-router.post('/post', ensureLoggedIn, function(req, res) {
-    console.log('hi, ', req.user.name);
+router.post('/post', ensureLoggedIn, (req, res) => {
+    console.log(`hi, ${req.user.name} <${req.user.email}>`);
+    res.redirect('/');
 });
 
 module.exports = router;
