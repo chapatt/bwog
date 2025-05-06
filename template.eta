@@ -80,6 +80,7 @@
             margin: 0;
             float: right;
             display: inline-block;
+            max-width: 30%;
         }
     </style>
     <script>
