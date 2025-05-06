@@ -14,6 +14,7 @@ app.use(session({
     saveUninitialized: false,
 }));
 app.use(passport.authenticate('session'));
+app.use(express.urlencoded({type: "application/x-www-form-urlencoded"}));
 app.use('/', authRouter);
 app.use('/', editorRouter);
 app.listen(3000, error => {
