@@ -46,7 +46,7 @@ router.get('/loginSuccess', (req, res) => {
 });
 
 router.get('/loginFailure', (req, res) => {
-    console.log(`user failed to log in: ${req.user.name} <${req.user.email}>`);
+    console.log(`user failed to log in`);
     res.clearCookie('isAuthed');
     res.redirect('/');
 });
