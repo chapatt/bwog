@@ -28,6 +28,10 @@
             display: none;
         }
 
+        form.editor {
+            margin-top: 2em;
+        }
+
         form.editor textarea {
             width: 100%;
             box-sizing: border-box;
@@ -76,11 +80,8 @@
         }
 
         .pagination.top {
-            transform: translateY(-100%);
             margin: 0;
             float: right;
-            display: inline-block;
-            max-width: 30%;
         }
     </style>
     <script>
@@ -111,10 +112,10 @@
     </a>
     <p class="pagination top">
         <% if (it.prevPage !== null) { %>
-            <a href="<%= it.prevPage %>">← prev</a>
+            <a href="<%= it.prevPage %>">←prev</a>
         <% } %>
         <% if (it.nextPage !== null) { %>
-            <a href="<%= it.nextPage %>">next →</a>
+            <a href="<%= it.nextPage %>">next→</a>
         <% } %>
     </p>
     <form id="editor" class="editor" action="./post" method="POST">
@@ -148,10 +149,10 @@
     </ol>
     <p class="pagination">
         <% if (it.prevPage !== null) { %>
-            <a href="<%= it.prevPage %>">← prev</a>
+            <a href="<%= it.prevPage %>">←prev</a>
         <% } %>
         <% if (it.nextPage !== null) { %>
-            <a href="<%= it.nextPage %>">next →</a>
+            <a href="<%= it.nextPage %>">next→</a>
         <% } %>
     </p>
 </body>
