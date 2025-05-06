@@ -1,11 +1,9 @@
 const express = require('express');
-const ensureLogIn = require('connect-ensure-login').ensureLoggedIn;
-
-const ensureLoggedIn = ensureLogIn('/login');
+const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 
 const router = express.Router();
 
-router.post('/post', ensureLoggedIn, (req, res) => {
+router.post('/post', ensureLoggedIn('/login'), (req, res) => {
     let post = {};
     post.text = req.body.text.replaceAll('\r\n', '\n');
     const trackStrings = req.body.tracks.replaceAll('\r\n', '\n').split('\n');
