@@ -32,7 +32,7 @@ router.post('/post', ensureLoggedIn, (req, res) => {
             break;
     }
 
-    console.log(`hi, ${req.user.name} <${req.user.email}>`);
+    console.log(`user posted: ${req.user.name} <${req.user.email}>`);
     console.log(post);
     res.redirect('/');
 });

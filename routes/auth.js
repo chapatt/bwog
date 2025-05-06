@@ -41,21 +41,27 @@ router.get('/oauth2/redirect/google', passport.authenticate('google', {
 }));
 
 router.get('/loginSuccess', (req, res) => {
+    console.log(`user logged in: ${req.user.name} <${req.user.email}>`);
     res.cookie('isAuthed', true);
     res.redirect('/');
 });
 
 router.get('/loginFailure', (req, res) => {
+    console.log(`user failed to log in: ${req.user.name} <${req.user.email}>`);
     res.clearCookie('isAuthed');
     res.redirect('/');
 });
 
 router.get('/logout', (req, res, next) => {
+    const userName = req.user?.name;
+    const userEmail = req.user?.email;
     res.clearCookie('isAuthed');
     req.logout(error => {
         if (error) {
+            console.log(`user failed to log out: ${userName} <${userEmail}>`);
             return next(error);
         }
+        console.log(`user logged out: ${userName} <${userEmail}>`);
         res.redirect('/');
     });
 });
