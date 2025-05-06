@@ -3,6 +3,7 @@ const express = require('express');
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 
 const Generator = require(path.resolve(__dirname, '../generator.js'));
+const fs = require("fs");
 
 const router = express.Router();
 
@@ -33,11 +34,22 @@ router.post('/post', ensureLoggedIn('/login'), (req, res) => {
             break;
     }
 
+    post.author = req.user.name;
+    post.createdAt = (new Date()).toISOString().split('.')[0]+"Z";
+
     console.log(`user posted: ${req.user.name} <${req.user.email}>`);
     console.log(post);
 
-    const generator = new Generator();
     const posts = require(process.env['SOURCE_JSON']);
+    posts.push(post);
+
+    try {
+        fs.writeFileSync(process.env['SOURCE_JSON'], JSON.stringify(posts));
+    } catch (err) {
+        res.redirect('/');
+    }
+
+    const generator = new Generator();
     generator.generate(posts, process.env['PUBLIC_PATH']);
     res.redirect('/');
 });
