@@ -30,13 +30,12 @@ passport.deserializeUser((user, cb) => {
     });
 });
 
-
 const router = express.Router();
 
 router.get('/login', passport.authenticate('google'));
 
 router.get('/oauth2/redirect/google', passport.authenticate('google', {
-    successReturnToOrRedirect: '/loginSuccess',
+    successRedirect: '/loginSuccess',
     failureRedirect: '/loginFailure'
 }));
 
