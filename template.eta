@@ -119,7 +119,7 @@
     </p>
     <form id="editor" class="editor" action="./post" method="POST">
         <textarea name="text" rows="3"></textarea>
-        <textarea name="tracks" rows="1"></textarea>
+        <textarea name="tracks" rows="1" placeholder="Artist - Title"></textarea>
         <input type="submit" value="post">
     </form>
     <ol class="posts">
