@@ -107,7 +107,7 @@
                 L 100,0
                 L 94,30
                 L 0,30 z" />
-            <text style="fill: white; font-size: 16px; font-style: oblique" x="5" y="25">music</text>
+            <text role="heading" aria-level="1" style="fill: white; font-size: 16px; font-style: oblique" x="5" y="25">music</text>
         </svg>
     </a>
     <p class="pagination top">
