@@ -8,10 +8,14 @@ const fs = require("fs");
 const router = express.Router();
 
 router.post('/post', ensureLoggedIn('/login'), (req, res) => {
-    let post = {};
-    post.text = req.body.text.replaceAll('\r\n', '\n');
+    let post = {
+        author: req.user.name,
+        createdAt: (new Date()).toISOString().split('.')[0]+"Z",
+        text: req.body.text.replaceAll('\r\n', '\n'),
+    };
     const trackStrings = req.body.tracks.replaceAll('\r\n', '\n').split('\n');
-    const tracks = trackStrings.map(track => {
+    const trackStringsFiltered = trackStrings.filter(track => track !== '');
+    const tracks = trackStringsFiltered.map(track => {
         const tuple = track.split(' - ');
         return {
             artist: tuple[0],
@@ -33,9 +37,6 @@ router.post('/post', ensureLoggedIn('/login'), (req, res) => {
         default:
             break;
     }
-
-    post.author = req.user.name;
-    post.createdAt = (new Date()).toISOString().split('.')[0]+"Z";
 
     console.log(`user posted: ${req.user.name} <${req.user.email}>`);
     console.log(post);
