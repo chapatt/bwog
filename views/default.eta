@@ -102,7 +102,7 @@
     </script>
 </head>
 <body>
-    <a class="title" href="./">
+    <a class="title" href="..">
         <svg viewBox="0 0 100 30" xmlns="http://www.w3.org/2000/svg">
             <path style="fill: #ee009a;" d="m 6,0
                 L 100,0

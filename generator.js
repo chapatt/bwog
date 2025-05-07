@@ -79,7 +79,7 @@ module.exports = class Generator {
     }
 
     writeSitemap(sitemap, file) {
-        const eta = new Eta({views: __dirname});
+        const eta = new Eta({views: path.resolve(__dirname, './views')});
         const xml = prettify(eta.render('./sitemap', {pages: sitemap}), {count: 4});
 
         try {
@@ -90,8 +90,8 @@ module.exports = class Generator {
     }
 
     writePage(posts, title, file, prevPage, nextPage) {
-        const eta = new Eta({views: __dirname});
-        const html = prettify(eta.render('./template', {posts, title, prevPage, nextPage}), {count: 4});
+        const eta = new Eta({views: path.resolve(__dirname, './views')});
+        const html = prettify(eta.render('./default', {posts, title, prevPage, nextPage}), {count: 4});
 
         try {
             fs.writeFileSync(file, html)
