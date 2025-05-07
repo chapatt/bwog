@@ -31,7 +31,11 @@ module.exports = class Generator {
         const mainPage = posts.slice(0, 10);
 
         try {
-            this.writePage(mainPage, path.resolve(outputDir, 'index.html'), this.filenameFromIsoTimestamp(posts[10].createdAt), null);
+            this.writePage(mainPage,
+                null,
+                path.resolve(outputDir, 'index.html'),
+                this.filenameFromIsoTimestamp(posts[10].createdAt),
+                null);
         } catch (error) {
             console.error(error);
             return;
@@ -39,19 +43,23 @@ module.exports = class Generator {
 
         let previousMonth = null;
         let currentMonth = null;
-        let nextMonth = this.filenameFromIsoTimestamp(postsByMonth[0][0].createdAt);
+        let nextMonth = postsByMonth[0][0].createdAt;
         for (let i = 0; i < postsByMonth.length; ++i) {
             previousMonth = currentMonth;
             currentMonth = nextMonth;
 
             if (postsByMonth.length > i + 1) {
-                nextMonth = this.filenameFromIsoTimestamp(postsByMonth[i + 1][0].createdAt);
+                nextMonth = postsByMonth[i + 1][0].createdAt;
             } else {
                 nextMonth = null;
             }
 
             try {
-                this.writePage(postsByMonth[i], path.resolve(outputDir, currentMonth), previousMonth, nextMonth);
+                this.writePage(postsByMonth[i],
+                    this.displayMonthFromIsoTimestamp(currentMonth),
+                    path.resolve(outputDir, this.filenameFromIsoTimestamp(currentMonth)),
+                    this.filenameFromIsoTimestamp(previousMonth),
+                    nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth));
             } catch (error) {
                 console.error(error);
                 return;
@@ -59,9 +67,9 @@ module.exports = class Generator {
         }
     }
 
-    writePage(posts, file, prevPage, nextPage) {
+    writePage(posts, title, file, prevPage, nextPage) {
         const eta = new Eta({views: __dirname});
-        const html = prettify(eta.render('./template', {posts, prevPage, nextPage}), {count: 4});
+        const html = prettify(eta.render('./template', {posts, title, prevPage, nextPage}), {count: 4});
 
         try {
             fs.writeFileSync(file, html)
@@ -73,5 +81,10 @@ module.exports = class Generator {
     filenameFromIsoTimestamp(timestamp) {
         const date = new Date(Date.parse(timestamp));
         return `${date.getFullYear()}-${date.getMonth() + 1}.html`;
+    }
+
+    displayMonthFromIsoTimestamp(timestamp) {
+        const date = new Date(Date.parse(timestamp));
+        return date.toLocaleDateString(undefined, {year: "numeric", month: "long"}).toLowerCase();
     }
 }
