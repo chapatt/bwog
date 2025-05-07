@@ -4,7 +4,8 @@ const path = require('path');
 const prettify = require('html-prettify');
 
 module.exports = class Generator {
-    generate(posts, outputDir) {
+    generate(siteUrl, posts, outputDir) {
+        const sitemap = [];
         posts.sort((a, b) => a < b ? -1 : (a > b ? 1 : 0));
 
         const postsByMonth = posts.reduce((acc, post) => {
@@ -36,6 +37,10 @@ module.exports = class Generator {
                 path.resolve(outputDir, 'index.html'),
                 this.filenameFromIsoTimestamp(posts[10].createdAt),
                 null);
+            sitemap.push({
+                url: `${siteUrl}/index.html`,
+                updatedAt: mainPage[0].createdAt,
+            });
         } catch (error) {
             console.error(error);
             return;
@@ -60,10 +65,27 @@ module.exports = class Generator {
                     path.resolve(outputDir, this.filenameFromIsoTimestamp(currentMonth)),
                     this.filenameFromIsoTimestamp(previousMonth),
                     nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth));
+                sitemap.push({
+                    url: `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
+                    updatedAt: currentMonth,
+                });
             } catch (error) {
                 console.error(error);
                 return;
             }
+        }
+
+        this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
+    }
+
+    writeSitemap(sitemap, file) {
+        const eta = new Eta({views: __dirname});
+        const xml = prettify(eta.render('./sitemap', {pages: sitemap}), {count: 4});
+
+        try {
+            fs.writeFileSync(file, xml)
+        } catch (err) {
+            throw (`Failed to write file: ${file}`);
         }
     }
 

@@ -51,7 +51,7 @@ router.post('/post', ensureLoggedIn('/login'), (req, res) => {
     }
 
     const generator = new Generator();
-    generator.generate(posts, process.env['PUBLIC_PATH']);
+    generator.generate(`https://${process.env['SITE_DOMAIN']}`, posts, process.env['PUBLIC_PATH']);
     res.redirect('/');
 });
 
