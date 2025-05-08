@@ -38,7 +38,7 @@ module.exports = class Generator {
                 this.filenameFromIsoTimestamp(posts[10].createdAt),
                 null);
             sitemap.push({
-                url: `${siteUrl}/index.html`,
+                url: `${siteUrl}/`,
                 updatedAt: mainPage[0].createdAt,
             });
         } catch (error) {
