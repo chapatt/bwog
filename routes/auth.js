@@ -1,13 +1,17 @@
+const path = require('path');
 const express = require('express');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
+
+const Controller = require(path.resolve(__dirname, '../controller.js'));
 
 passport.use(new GoogleStrategy({
         clientID: process.env['GOOGLE_OAUTH_CLIENT_ID'],
         clientSecret: process.env['GOOGLE_OAUTH_CLIENT_SECRET'],
         callbackURL: `https://${process.env['SITE_DOMAIN']}/oauth2/redirect/google`,
         scope: ['profile', 'email'],
-        state: true
+        state: true,
+        store: true,
     },
     (accessToken, refreshToken, profile, cb) => {
         if (process.env['GOOGLE_OAUTH_AUTHORIZED_USER_ID'] === profile.id) {
@@ -32,18 +36,27 @@ passport.deserializeUser((user, cb) => {
 
 const router = express.Router();
 
-router.get('/login', passport.authenticate('google'));
-
-router.get('/oauth2/redirect/google', passport.authenticate('google', {
-    successRedirect: '/loginSuccess',
-    failureRedirect: '/loginFailure'
-}));
-
-router.get('/loginSuccess', (req, res) => {
-    console.log(`user logged in: ${req.user.name} <${req.user.email}>`);
-    res.cookie('isAuthed', true);
-    res.redirect('/');
+router.get('/login', (req, res, next) => {
+    passport.authenticate('google', {
+        state: {pendingPost: req.session.pendingPost},
+    })(req, res, next);
 });
+
+router.get('/oauth2/redirect/google',
+    passport.authenticate('google', {
+        failureRedirect: '/loginFailure'
+    }), (req, res) => {
+        console.log(`user logged in: ${req.user.name} <${req.user.email}>`);
+        res.cookie('isAuthed', true);
+
+        if (req.authInfo.state.pendingPost) {
+            const controller = new Controller();
+            controller.createPost(req.authInfo.state.pendingPost, req.user);
+        }
+
+        res.redirect('/');
+    }
+);
 
 router.get('/loginFailure', (req, res) => {
     console.log(`user failed to log in`);

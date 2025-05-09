@@ -1,57 +1,17 @@
-const path = require("path");
+const path = require('path');
 const express = require('express');
-const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 
-const Generator = require(path.resolve(__dirname, '../generator.js'));
-const fs = require("fs");
+const Controller = require(path.resolve(__dirname, '../controller.js'));
 
 const router = express.Router();
 
-router.post('/post', ensureLoggedIn('/login'), (req, res) => {
-    let post = {
-        author: req.user.name,
-        createdAt: (new Date()).toISOString().split('.')[0]+"Z",
-        text: req.body.text.replaceAll('\r\n', '\n'),
-    };
-    const trackStrings = req.body.tracks.replaceAll('\r\n', '\n').split('\n');
-    const trackStringsFiltered = trackStrings.filter(track => track !== '');
-    const tracks = trackStringsFiltered.map(track => {
-        const tuple = track.split(' - ');
-        return {
-            artist: tuple[0],
-            title: tuple[1],
-        };
-    });
-    post.type = tracks.length > 0
-        ? (tracks.length > 1 ? 'playlist' : 'song')
-        : 'text';
-
-    switch (post.type) {
-        case 'playlist':
-            post.tracks = tracks;
-            break;
-        case 'song':
-            post = {...post, ...tracks[0]};
-            break;
-        case 'text':
-        default:
-            break;
+router.post('/post', (req, res) => {
+    if (!req.isAuthenticated()) {
+        req.session.pendingPost = req.body;
+        res.redirect('/login');
     }
-
-    console.log(`user posted: ${req.user.name} <${req.user.email}>`);
-    console.log(post);
-
-    const posts = require(process.env['SOURCE_JSON']);
-    posts.push(post);
-
-    try {
-        fs.writeFileSync(process.env['SOURCE_JSON'], JSON.stringify(posts));
-    } catch (err) {
-        res.redirect('/');
-    }
-
-    const generator = new Generator();
-    generator.generate(`https://${process.env['SITE_DOMAIN']}`, posts, process.env['PUBLIC_PATH']);
+    const controller = new Controller();
+    controller.createPost(req.body, req.user);
     res.redirect('/');
 });
 

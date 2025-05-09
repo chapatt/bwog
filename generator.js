@@ -109,4 +109,4 @@ module.exports = class Generator {
         const date = new Date(Date.parse(timestamp));
         return date.toLocaleDateString(undefined, {year: "numeric", month: "long"});
     }
-}
+};

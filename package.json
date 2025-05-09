@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "commander": "^13.1.0",
-    "connect-ensure-login": "^0.1.1",
     "dotenv": "^16.5.0",
     "eta": "^3.5.0",
     "express": "^5.1.0",
