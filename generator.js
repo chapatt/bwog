@@ -6,7 +6,7 @@ const prettify = require('html-prettify');
 module.exports = class Generator {
     generate(siteUrl, posts, outputDir) {
         const sitemap = [];
-        posts.sort((a, b) => a < b ? -1 : (a > b ? 1 : 0));
+        posts.sort((a, b) => a.createdAt < b.createdAt ? -1 : (a.createdAt > b.createdAt ? 1 : 0));
 
         const postsByMonth = posts.reduce((acc, post) => {
             let currentMonth = null;
