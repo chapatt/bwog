@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="music blog<%= it.title === null ? '' : ` (${it.title})` %>">
-    <title>music</title>
+    <% if (it.title === null) { %>
+        <meta name="description" content="A microblog of music I'm currently interested in.">
+    <% } else { %>
+        <meta name="description" content="An archive of posts from <%= `(${it.title})` %>.">
+    <% } %>
+    <title>music blog<%= it.title === null ? '' : ` (${it.title.toLowerCase()})` %></title>
     <style>
         body {
             font-family: sans-serif;
