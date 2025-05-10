@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const Generator = require(path.resolve(__dirname, './generator.js'));
 
