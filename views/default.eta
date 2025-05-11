@@ -6,7 +6,7 @@
     <% if (it.title === null) { %>
         <meta name="description" content="A microblog of music I'm currently interested in.">
     <% } else { %>
-        <meta name="description" content="An archive of posts from <%= `(${it.title})` %>.">
+        <meta name="description" content="An archive of posts from <%= `${it.title}` %>.">
     <% } %>
     <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml;charset=utf-8,<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><rect style='fill: %23ee009a' width='100' height='100' /><path style='fill: white' d='m 46.216253,87.055942 C 41.089994,74.09717 49.509928,69.509606 62.970385,75.810224 a 1.0835131,1.0835131 128.74737 0 0 1.328032,-1.654849 C 52.864994,61.220305 44.560834,52.968784 54.4857,40.9555 62.7098,31.0007 63.8784,28.384 56.693,22.0911 L 44.248411,11.192356 a 0.90571522,0.90571522 139.79293 0 0 -1.367476,1.155896 C 51.316177,26.181057 50.793222,27.210649 44.5515,34.8343 32.9606,48.9916 34.6,51.1771 49.6209,64.3152 32.710858,63.738144 29.050322,76.002073 44.093793,88.80027 a 1.4157742,1.4157742 140.58518 0 0 2.12246,-1.744328 z' /></svg>">
     <% if (it.canonical !== null) { %>
