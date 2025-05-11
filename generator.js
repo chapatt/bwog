@@ -34,6 +34,7 @@ module.exports = class Generator {
         try {
             this.writePage(mainPage,
                 null,
+                `${siteUrl}/`,
                 path.resolve(outputDir, 'index.html'),
                 this.filenameFromIsoTimestamp(posts[10].createdAt),
                 null);
@@ -62,6 +63,7 @@ module.exports = class Generator {
             try {
                 this.writePage(postsByMonth[i],
                     this.displayMonthFromIsoTimestamp(currentMonth),
+                    null,
                     path.resolve(outputDir, this.filenameFromIsoTimestamp(currentMonth)),
                     previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth),
                     nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth));
@@ -89,9 +91,9 @@ module.exports = class Generator {
         }
     }
 
-    writePage(posts, title, file, prevPage, nextPage) {
+    writePage(posts, title, canonical, file, prevPage, nextPage) {
         const eta = new Eta({views: path.resolve(__dirname, './views')});
-        const html = prettify(eta.render('./default', {posts, title, prevPage, nextPage}), {count: 4});
+        const html = prettify(eta.render('./default', {posts, title, canonical, prevPage, nextPage}), {count: 4});
 
         try {
             fs.writeFileSync(file, html)
