@@ -109,6 +109,6 @@ module.exports = class Generator {
 
     displayMonthFromIsoTimestamp(timestamp) {
         const date = new Date(Date.parse(timestamp));
-        return date.toLocaleDateString(undefined, {year: "numeric", month: "long"});
+        return date.toLocaleDateString(undefined, {year: 'numeric', month: 'long'});
     }
 };
