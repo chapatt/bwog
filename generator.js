@@ -63,7 +63,7 @@ module.exports = class Generator {
                 this.writePage(postsByMonth[i],
                     this.displayMonthFromIsoTimestamp(currentMonth),
                     path.resolve(outputDir, this.filenameFromIsoTimestamp(currentMonth)),
-                    this.filenameFromIsoTimestamp(previousMonth),
+                    previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth),
                     nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth));
                 sitemap.push({
                     url: `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
