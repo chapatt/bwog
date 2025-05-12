@@ -1,7 +1,7 @@
 const { Eta } = require('eta');
 const fs = require('fs');
 const path = require('path');
-const prettify = require('html-prettify');
+const beautify = require('js-beautify').html;
 
 module.exports = class Generator {
     generate(siteUrl, posts, outputDir) {
@@ -82,7 +82,10 @@ module.exports = class Generator {
 
     writeSitemap(sitemap, file) {
         const eta = new Eta({views: path.resolve(__dirname, './views')});
-        const xml = prettify(eta.render('./sitemap', {pages: sitemap}), {count: 4});
+        const xml = beautify(
+            eta.render('./sitemap', {pages: sitemap}),
+            {end_with_newline: true},
+        );
 
         try {
             fs.writeFileSync(file, xml)
@@ -93,7 +96,15 @@ module.exports = class Generator {
 
     writePage(posts, title, canonical, file, prevPage, nextPage) {
         const eta = new Eta({views: path.resolve(__dirname, './views')});
-        const html = prettify(eta.render('./default', {posts, title, canonical, prevPage, nextPage}), {count: 4});
+        const html = beautify(
+            eta.render('./default', {posts, title, canonical, prevPage, nextPage}), {tab_size: 4, ignore: ['style', 'script']},
+            {
+                end_with_newline: true,
+                space_after_anon_function: true,
+                operator_position: 'after-newline',
+                extra_liners: [],
+            },
+        );
 
         try {
             fs.writeFileSync(file, html)
