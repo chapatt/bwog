@@ -78,6 +78,7 @@
         ol.posts > li > .playlist {
             list-style-type: none;
             padding-left: 0;
+            margin: 1em 0;
         }
 
         .pagination {
