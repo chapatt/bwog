@@ -136,12 +136,10 @@
         <% it.posts.forEach(function(post) { %>
             <li>
                 <time class="timestamp" datetime="<%= post.createdAt %>">
-                <%= (new Date(Date.parse(post.createdAt))).toLocaleDateString() %>
-                (<%= (new Date(Date.parse(post.createdAt))).toLocaleTimeString([], {timeStyle: 'short'}) %>)
+                    <%= (new Date(Date.parse(post.createdAt))).toLocaleDateString() %>
+                    (<%= (new Date(Date.parse(post.createdAt))).toLocaleTimeString([], {timeStyle: 'short'}) %>)
                 </time>
-                <div class="text">
-                    <p><%~ post.text.replace(/(https:\/\/\S*)/g, '<a href="$1">$1</a>').replaceAll('\n', '<br />') %></p>
-                </div>
+                <p class="text"><%~ post.text.replace(/(https:\/\/\S*)/g, '<a href="$1">$1</a>').replaceAll('\n', '<br />') %></p>
                 <% if (post.type === 'song') { %>
                     <p class="song"><span class="artist"><%= post.artist%></span> - <span class="title"><%= post.title %></span></p>
                 <% } else if (post.type === 'album') { %>
