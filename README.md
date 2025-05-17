@@ -1,5 +1,5 @@
 <p align="center"><img src="images/logo.png" alt="bwog" style="width: 20em;" /></p>
-<p align="center">bwog is a toy static site generator for a tumblelog/blog.</p>
+<p align="center">bwog is a toy static site generator for a tumblelog/microblog</p>
 
 ## The Architecture
 The blog generated is by-and-large a static HTML site. The other component is a small, nodejs app which facilitates adding posts and regenerating the site.
