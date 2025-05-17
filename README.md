@@ -29,7 +29,7 @@ location ~ ^/(post|login|logout|oauth2/redirect/google) {
 ```
 
 ## Daemon
-The nodejs app can be run however you prefer to run daemons on your system. A systemd unit file is included at `static-site-generator.service`.
+The nodejs app can be run however you prefer to run daemons on your system. A systemd unit file is included at `bwog.service`.
 
 ## Configuration
 The included `.env.example` can be copied to `.env` and the values replaced.
@@ -53,7 +53,7 @@ PUBLIC_PATH=/var/www/example
 ```
 The path to your source post JSON. This will be updated, and used to generate the site.
 ```
-SOURCE_JSON=/usr/share/static-site-generator/blog.json
+SOURCE_JSON=/usr/share/bwog/blog.json
 ```
 
 ## Post data
