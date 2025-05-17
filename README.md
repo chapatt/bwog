@@ -28,6 +28,12 @@ location ~ ^/(post|login|logout|oauth2/redirect/google) {
 }
 ```
 
+## Dependencies
+Install dependencies with npm:
+```
+npm install
+```
+
 ## Daemon
 The nodejs app can be run however you prefer to run daemons on your system. A systemd unit file is included at `bwog.service`.
 
@@ -57,7 +63,7 @@ SOURCE_JSON=/usr/share/bwog/blog.json
 ```
 
 ## Post data
-The format of the source post JSON has the following structure. Note the three types and following related properties.
+The source JSON has the following structure. Note the three types and following related properties.
 ```json
 [
   {
