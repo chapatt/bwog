@@ -1,12 +1,12 @@
 <p align="center"><img src="images/logo.png" alt="bwog" style="width: 20em;" /></p>
 <p align="center">bwog is a toy static site generator for a tumblelog/microblog</p>
 
-## The Architecture
-The blog generated is by-and-large a static HTML site. The other component is a small, nodejs app which facilitates adding posts and regenerating the site.
+## Architecture
+The blog generated is by-and-large a static HTML site. The other component is a small nodejs app which facilitates adding posts and regenerating the site.
 
-This is clearly represented by the included example nginx site configuration (though any static server and reverse proxy can be used).
+This structure can be seen in the included example nginx site configuration (any static server and reverse proxy can be used).
 
-This block attempts to find a file at the webroot matching the path in the requested uri:
+This block attempts to find a file at the webroot matching the path in the requested URL:
 ```
 root /var/www/example;
 index index.html;
@@ -29,25 +29,25 @@ location ~ ^/(post|login|logout|oauth2/redirect/google) {
 ```
 
 ## Daemon
-The nodejs app can be run however you prefer to run services on your system. A systemd unit file is included at `static-site-generator.service`.
+The nodejs app can be run however you prefer to run daemons on your system. A systemd unit file is included at `static-site-generator.service`.
 
 ## Configuration
 The included `.env.example` can be copied to `.env` and the values replaced.
 
-The javascript oauth library Passport is used to authenticate via Google account. You must set up an oauth2 client on the Google Developer Console in the Google Auth Platform and enter the credentials here.
+The javascript oauth library Passport is used to authenticate via Google account. You must set up an oauth2 client on the Google Developer Console in the Google Auth Platform and copy the credentials here:
 ```
 GOOGLE_OAUTH_CLIENT_ID=12345ABCDE
 GOOGLE_OAUTH_CLIENT_SECRET=12345ABCDE
 ```
-Set the id of the user to whom you wish to allow post access:
+The id of the user to whom you wish to allow post access:
 ```
 GOOGLE_OAUTH_AUTHORIZED_USER_ID=12345ABCDE
 ```
-Set a long random string here to encrypt the session:
+A long random string to encrypt the session:
 ```
 SESSION_SECRET=12345ABCDE
 ```
-The path to your static files (where they should be generated) should be set here:
+The path to your static files (where they should be generated):
 ```
 PUBLIC_PATH=/var/www/example
 ```
@@ -95,7 +95,7 @@ The format of the source post JSON has the following structure. Note the three t
 
 ## Usage
 
-When the server is running, you can hit the `/login` endpoint to start the Google oauth2 flow. When authenticated, a form appears at the top of each page for posting.
+When the server is running, you can hit the `/login` endpoint to start the oauth flow. When authenticated, a form appears at the top of each page for posting.
 
 Conversely `/logout` invalidates your session.
 
