@@ -28,7 +28,7 @@ location ~ ^/(post|login|logout|oauth2/redirect/google) {
 }
 ```
 
-## Service
+## Daemon
 The nodejs app can be run however you prefer to run services on your system. A systemd unit file is included at `static-site-generator.service`.
 
 ## Configuration
