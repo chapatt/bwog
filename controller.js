@@ -5,6 +5,9 @@ const Generator = require(path.resolve(__dirname, './generator.js'));
 
 module.exports = class Controller {
     createPost(formData, user) {
+        if (!formData.text && !formData.tracks) {
+            return null;
+        }
         let post = {
             author: user.name,
             createdAt: (new Date()).toISOString().split('.')[0] + "Z",
@@ -35,9 +38,6 @@ module.exports = class Controller {
                 break;
         }
 
-        console.log(`user posted: ${user.name} <${user.email}>`);
-        console.log(post);
-
         const posts = require(process.env['SOURCE_JSON']);
         posts.push(post);
 
@@ -49,5 +49,10 @@ module.exports = class Controller {
 
         const generator = new Generator();
         generator.generate(`https://${process.env['SITE_DOMAIN']}`, posts, process.env['PUBLIC_PATH']);
+
+        console.log(`user posted: ${user.name} <${user.email}>`);
+        console.log(post);
+
+        return post;
     }
 };
