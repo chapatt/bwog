@@ -63,8 +63,8 @@ module.exports = class Generator {
             try {
                 this.writePage(postsByMonth[i],
                     this.displayMonthFromIsoTimestamp(currentMonth),
-                    null,
-                    path.resolve(outputDir, this.filenameFromIsoTimestamp(currentMonth)),
+                    `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
+                    path.resolve(outputDir, `${this.filenameFromIsoTimestamp(currentMonth)}.html`),
                     previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth),
                     nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth));
                 sitemap.push({
@@ -115,7 +115,7 @@ module.exports = class Generator {
 
     filenameFromIsoTimestamp(timestamp) {
         const date = new Date(Date.parse(timestamp));
-        return `${date.getFullYear()}-${date.getMonth() + 1}.html`;
+        return `${date.getFullYear()}-${date.getMonth() + 1}`;
     }
 
     displayMonthFromIsoTimestamp(timestamp) {
