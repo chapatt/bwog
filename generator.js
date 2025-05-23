@@ -4,9 +4,9 @@ const path = require('path');
 const beautify = require('js-beautify').html;
 
 module.exports = class Generator {
-    generate(siteUrl, posts, outputDir) {
+    generate(siteUrl, outputDir, posts) {
         const sitemap = [];
-        posts.sort((a, b) => a.createdAt < b.createdAt ? -1 : (a.createdAt > b.createdAt ? 1 : 0));
+        posts.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
 
         const postsByMonth = posts.reduce((acc, post) => {
             let currentMonth = null;
@@ -27,37 +27,25 @@ module.exports = class Generator {
 
             return acc;
         }, []);
-        postsByMonth.forEach(month => month.reverse());
-        posts.reverse();
-        const mainPage = posts.slice(0, 10);
 
         try {
-            this.writePage(mainPage,
-                null,
-                `${siteUrl}/`,
-                path.resolve(outputDir, 'index.html'),
-                this.filenameFromIsoTimestamp(posts[10].createdAt),
-                null);
-            sitemap.push({
-                url: `${siteUrl}/`,
-                updatedAt: mainPage[0].createdAt,
-            });
+            this.generateIndex(siteUrl, outputDir, posts, sitemap);
         } catch (error) {
             console.error(error);
             return;
         }
 
-        let previousMonth = null;
+        let previousMonth = postsByMonth[0][0].createdAt;
         let currentMonth = null;
-        let nextMonth = postsByMonth[0][0].createdAt;
+        let nextMonth = null;
         for (let i = 0; i < postsByMonth.length; ++i) {
-            previousMonth = currentMonth;
-            currentMonth = nextMonth;
+            nextMonth = currentMonth;
+            currentMonth = previousMonth;
 
             if (postsByMonth.length > i + 1) {
-                nextMonth = postsByMonth[i + 1][0].createdAt;
+                previousMonth = postsByMonth[i + 1][0].createdAt;
             } else {
-                nextMonth = null;
+                previousMonth = null;
             }
 
             try {
@@ -78,6 +66,73 @@ module.exports = class Generator {
         }
 
         this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
+    }
+
+    generatePartial(siteUrl, outputDir, posts, newPost) {
+        const sitemap = [];
+        posts.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
+
+        this.generateIndex(siteUrl, outputDir, posts, sitemap);
+
+        const months = posts.reduce((acc, post) => {
+            if (acc.length === 0) {
+                return [post.createdAt];
+            }
+
+            const postDate = new Date(Date.parse(post.createdAt));
+            const lastDate = new Date(Date.parse(acc[acc.length - 1]));
+
+            if (postDate.getFullYear() === lastDate.getFullYear() && postDate.getMonth() === lastDate.getMonth()) {
+                return acc;
+            }
+
+            return [...acc, post.createdAt];
+        }, []);
+
+        months.forEach(month => sitemap.push({
+            url: `${siteUrl}/${this.filenameFromIsoTimestamp(month)}`,
+            updatedAt: month,
+        }));
+
+        this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
+
+        const newPostDate = new Date(Date.parse(newPost.createdAt));
+        const thisMonthPosts = posts.filter(post => {
+            const postDate = new Date(Date.parse(post.createdAt));
+            return postDate.getFullYear() === newPostDate.getFullYear()
+            && postDate.getMonth() === newPostDate.getMonth()
+        });
+
+        try {
+            this.writePage(thisMonthPosts,
+                this.displayMonthFromIsoTimestamp(newPost.createdAt),
+                `${siteUrl}/${this.filenameFromIsoTimestamp(newPost.createdAt)}`,
+                path.resolve(outputDir, `${this.filenameFromIsoTimestamp(newPost.createdAt)}.html`),
+                months.length === 0 ? null : this.filenameFromIsoTimestamp(months[1]),
+                null);
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
+    generateIndex(siteUrl, outputDir, posts, sitemap) {
+        const mainPage = posts.slice(0, 10);
+
+        try {
+            this.writePage(mainPage,
+                null,
+                `${siteUrl}/`,
+                path.resolve(outputDir, 'index.html'),
+                this.filenameFromIsoTimestamp(posts[10].createdAt),
+                null);
+            sitemap.push({
+                url: `${siteUrl}/`,
+                updatedAt: mainPage[0].createdAt,
+            });
+        } catch (error) {
+            throw(error);
+        }
     }
 
     writeSitemap(sitemap, file) {

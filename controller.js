@@ -48,7 +48,7 @@ module.exports = class Controller {
         }
 
         const generator = new Generator();
-        generator.generate(`https://${process.env['SITE_DOMAIN']}`, posts, process.env['PUBLIC_PATH']);
+        generator.generatePartial(`https://${process.env['SITE_DOMAIN']}`, process.env['PUBLIC_PATH'], posts, post);
 
         console.log(`user posted: ${user.name} <${user.email}>`);
         console.log(post);

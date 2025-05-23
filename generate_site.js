@@ -16,4 +16,4 @@ const outputDir = path.resolve(options.output);
 const posts = require(input);
 
 const generator = new Generator();
-generator.generate(siteUrl, posts, outputDir);
+generator.generate(siteUrl, outputDir, posts);
