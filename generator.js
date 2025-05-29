@@ -108,7 +108,7 @@ module.exports = class Generator {
                 this.displayMonthFromIsoTimestamp(newPost.createdAt),
                 `${siteUrl}/${this.filenameFromIsoTimestamp(newPost.createdAt)}`,
                 path.resolve(outputDir, `${this.filenameFromIsoTimestamp(newPost.createdAt)}.html`),
-                months.length === 1 ? null : this.filenameFromIsoTimestamp(months[1]),
+                posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null,
                 null);
         } catch (error) {
             console.error(error);
