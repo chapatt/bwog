@@ -80,10 +80,40 @@ module.exports = class Generator {
             return postDate.getFullYear() === newPostDate.getFullYear()
                 && postDate.getMonth() === newPostDate.getMonth()
         });
-
         const isNewMonth = thisMonthPosts.length === 1;
 
+        try {
+            this.writePage(thisMonthPosts,
+                this.displayMonthFromIsoTimestamp(newPost.createdAt),
+                `${siteUrl}/${this.filenameFromIsoTimestamp(newPost.createdAt)}`,
+                path.resolve(outputDir, `${this.filenameFromIsoTimestamp(newPost.createdAt)}.html`),
+                posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null,
+                null);
+        } catch (error) {
+            console.error(error);
+        }
+
         if (isNewMonth) {
+            if (posts.length > 1) {
+                const prevPostDate = new Date(Date.parse(posts[1].createdAt));
+                const lastMonthPosts = posts.filter(post => {
+                    const postDate = new Date(Date.parse(post.createdAt));
+                    return postDate.getFullYear() === prevPostDate.getFullYear()
+                        && postDate.getMonth() === prevPostDate.getMonth()
+                });
+
+                try {
+                    this.writePage(lastMonthPosts,
+                        this.displayMonthFromIsoTimestamp(posts[1].createdAt),
+                        `${siteUrl}/${this.filenameFromIsoTimestamp(posts[1].createdAt)}`,
+                        path.resolve(outputDir, `${this.filenameFromIsoTimestamp(posts[1].createdAt)}.html`),
+                        posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null,
+                        this.filenameFromIsoTimestamp(newPost.createdAt));
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
             const months = posts.reduce((acc, post) => {
                 if (acc.length === 0) {
                     return [post.createdAt];
@@ -105,17 +135,6 @@ module.exports = class Generator {
             }));
 
             this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
-        }
-
-        try {
-            this.writePage(thisMonthPosts,
-                this.displayMonthFromIsoTimestamp(newPost.createdAt),
-                `${siteUrl}/${this.filenameFromIsoTimestamp(newPost.createdAt)}`,
-                path.resolve(outputDir, `${this.filenameFromIsoTimestamp(newPost.createdAt)}.html`),
-                posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null,
-                null);
-        } catch (error) {
-            console.error(error);
         }
     }
 
