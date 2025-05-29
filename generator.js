@@ -74,34 +74,38 @@ module.exports = class Generator {
 
         this.generateIndex(siteUrl, outputDir, posts, sitemap);
 
-        const months = posts.reduce((acc, post) => {
-            if (acc.length === 0) {
-                return [post.createdAt];
-            }
-
-            const postDate = new Date(Date.parse(post.createdAt));
-            const lastDate = new Date(Date.parse(acc[acc.length - 1]));
-
-            if (postDate.getFullYear() === lastDate.getFullYear() && postDate.getMonth() === lastDate.getMonth()) {
-                return acc;
-            }
-
-            return [...acc, post.createdAt];
-        }, []);
-
-        months.forEach(month => sitemap.push({
-            url: `${siteUrl}/${this.filenameFromIsoTimestamp(month)}`,
-            updatedAt: month,
-        }));
-
-        this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
-
         const newPostDate = new Date(Date.parse(newPost.createdAt));
         const thisMonthPosts = posts.filter(post => {
             const postDate = new Date(Date.parse(post.createdAt));
             return postDate.getFullYear() === newPostDate.getFullYear()
-            && postDate.getMonth() === newPostDate.getMonth()
+                && postDate.getMonth() === newPostDate.getMonth()
         });
+
+        const isNewMonth = thisMonthPosts.length === 1;
+
+        if (isNewMonth) {
+            const months = posts.reduce((acc, post) => {
+                if (acc.length === 0) {
+                    return [post.createdAt];
+                }
+
+                const postDate = new Date(Date.parse(post.createdAt));
+                const lastDate = new Date(Date.parse(acc[acc.length - 1]));
+
+                if (postDate.getFullYear() === lastDate.getFullYear() && postDate.getMonth() === lastDate.getMonth()) {
+                    return acc;
+                }
+
+                return [...acc, post.createdAt];
+            }, []);
+
+            months.forEach(month => sitemap.push({
+                url: `${siteUrl}/${this.filenameFromIsoTimestamp(month)}`,
+                updatedAt: month,
+            }));
+
+            this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
+        }
 
         try {
             this.writePage(thisMonthPosts,
@@ -112,7 +116,6 @@ module.exports = class Generator {
                 null);
         } catch (error) {
             console.error(error);
-            return;
         }
     }
 
