@@ -103,7 +103,6 @@ The source JSON has the following structure. Note the three types and following 
 ```
 
 ## Usage
-
 When the server is running, you can hit the `/login` endpoint to start the oauth flow. When authenticated, a form appears at the top of each page for posting.
 
 Conversely `/logout` invalidates your session.
@@ -113,3 +112,6 @@ If you need to generate the entire site from the terminal, e.g. if you change a 
 ```
 node generate_site.js -u https://example.com -i blog.json -o /var/www/example
 ```
+
+## Interfaces & Protocols
+A sitemap is generated at `/sitemap.xml`.
