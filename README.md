@@ -63,16 +63,18 @@ SOURCE_JSON=/usr/share/bwog/blog.json
 ```
 
 ## Post data
-The source JSON has the following structure. Note the three types and following related properties.
+The source JSON has the following structure. Note the three types and following related properties. `id` is a base58 UUIDv4.
 ```json
 [
   {
+    "id": "123456789aAbBcCdDeEfFg",
     "author": "John Blog",
     "createdAt": "2025-05-01T16:58:00Z",
     "type": "text",
     "text": "Hello, world."
   },
   {
+    "id": "GhHijJkKlmMnNopPqQrRsS",
     "author": "John Blog",
     "createdAt": "2025-05-02T10:58:00Z",
     "type": "song",
@@ -81,6 +83,7 @@ The source JSON has the following structure. Note the three types and following 
     "title": "Breathe"
   },
   {
+    "id": "tTuUvVwWxXyYzZ12345678",
     "author": "John Blog",
     "createdAt": "2025-05-03T20:38:00Z",
     "text": "A couple slappin' tunes:\nhttps://www.youtube.com/watch?v=i-SpGB6DtHw\nhttps://www.youtube.com/watch?v=mMWCQa-Gwv0",

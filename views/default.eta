@@ -135,7 +135,7 @@
     </form>
     <ol class="posts">
         <% it.posts.forEach(function(post) { %>
-            <li>
+            <li id="<%= post.id %>">
                 <time class="timestamp" datetime="<%= post.createdAt %>">
                     <%= (new Date(Date.parse(post.createdAt))).toLocaleDateString() %>
                     (<%= (new Date(Date.parse(post.createdAt))).toLocaleTimeString([], {timeStyle: 'short'}) %>)

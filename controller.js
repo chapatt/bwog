@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const short = require('short-uuid');
 
 const Generator = require(path.resolve(__dirname, './generator.js'));
 
@@ -9,6 +10,7 @@ module.exports = class Controller {
             return null;
         }
         let post = {
+            id: short.generate(),
             author: user.name,
             createdAt: (new Date()).toISOString().split('.')[0] + "Z",
             text: formData.text.replaceAll('\r\n', '\n'),

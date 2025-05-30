@@ -7,6 +7,7 @@
     "express-session": "^1.18.1",
     "js-beautify": "^1.15.4",
     "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
+    "passport-google-oauth20": "^2.0.0",
+    "short-uuid": "^5.2.0"
   }
 }
