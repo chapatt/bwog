@@ -1,7 +1,7 @@
 const { Eta } = require('eta');
 const fs = require('fs');
 const path = require('path');
-const beautify = require('js-beautify').html;
+const beautify = require('js-beautify');
 
 module.exports = class Generator {
     generate(siteUrl, outputDir, posts) {
@@ -159,7 +159,7 @@ module.exports = class Generator {
 
     writeSitemap(sitemap, file) {
         const eta = new Eta({views: path.resolve(__dirname, './views')});
-        const xml = beautify(
+        const xml = beautify.html(
             eta.render('./sitemap', {pages: sitemap}),
             {end_with_newline: true},
         );
@@ -173,7 +173,7 @@ module.exports = class Generator {
 
     writePage(posts, title, canonical, file, prevPage, nextPage) {
         const eta = new Eta({views: path.resolve(__dirname, './views')});
-        const html = beautify(
+        const html = beautify.html(
             eta.render('./default', {posts, title, canonical, prevPage, nextPage}), {tab_size: 4, ignore: ['style', 'script']},
             {
                 end_with_newline: true,

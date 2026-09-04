@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const short = require('short-uuid');
+const beautify = require('js-beautify');
 
 const Generator = require(path.resolve(__dirname, './generator.js'));
 
@@ -44,7 +45,11 @@ module.exports = class Controller {
         posts.push(post);
 
         try {
-            fs.writeFileSync(process.env['SOURCE_JSON'], JSON.stringify(posts));
+            const json = beautify.js(
+                JSON.stringify(posts),
+                {end_with_newline: true},
+            );
+            fs.writeFileSync(process.env['SOURCE_JSON'], json);
         } catch (err) {
             throw (`Failed to write file: ${process.env['SOURCE_JSON']}`);
         }
