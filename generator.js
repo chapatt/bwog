@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import beautify from 'js-beautify';
 import { minify } from 'html-minifier-next'
+import {fileURLToPath} from 'url';
 
 class Generator {
     generate(siteUrl, outputDir, posts) {
@@ -167,7 +168,7 @@ class Generator {
     }
 
     writeSitemap(sitemap, file) {
-        const eta = new Eta({views: path.resolve(__dirname, './views')});
+        const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const xml = beautify.html(
             eta.render('./sitemap', {pages: sitemap}),
             {end_with_newline: true},
@@ -181,7 +182,7 @@ class Generator {
     }
 
     writePage(posts, title, canonical, file, prevPage, nextPage) {
-        const eta = new Eta({views: path.resolve(__dirname, './views')});
+        const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const html = beautify.html(
             eta.render('./default', {posts, title, canonical, prevPage, nextPage}), {tab_size: 4, ignore: ['style', 'script']},
             {
@@ -200,6 +201,7 @@ class Generator {
     }
 
     writeAP(posts, siteUrl, outputDir, currentMonth, prevPage, nextPage) {
+        const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const page = {
             "@context": "https://www.w3.org/ns/activitystreams",
             "type": "OrderedCollectionPage",
@@ -257,19 +259,27 @@ class Generator {
 
             page.orderedItems.push(create);
 
-            const notePath = path.resolve(`${outputDir}/ap/notes/`, `${post.createdAt}.json`);
+            const notePath = path.resolve(`${outputDir}/ap/notes/`, `${post.createdAt.replaceAll(':', '-')}.json`);
             const noteJson = beautify.js(
                 JSON.stringify(note),
                 {end_with_newline: true},
             );
-            fs.writeFileSync(notePath, noteJson);
+            try {
+                fs.writeFileSync(notePath, noteJson);
+            } catch (err) {
+                throw (`Failed to write file: ${notePath}`);
+            }
 
-            const createPath = path.resolve(`${outputDir}/ap/creates/`, `${post.createdAt}.json`);
+            const createPath = path.resolve(`${outputDir}/ap/creates/`, `${post.createdAt.replaceAll(':', '-')}.json`);
             const createJson = beautify.js(
                 JSON.stringify(create),
                 {end_with_newline: true},
             );
-            fs.writeFileSync(createPath, createJson);
+            try {
+                fs.writeFileSync(createPath, createJson);
+            } catch (err) {
+                throw (`Failed to write file: ${createPath}`);
+            }
         });
 
         const pagePath = path.resolve(`${outputDir}/ap/outbox_pages/`, `${currentMonth}.json`);
@@ -277,7 +287,11 @@ class Generator {
             JSON.stringify(page),
             {end_with_newline: true},
         );
-        fs.writeFileSync(pagePath, pageJson);
+        try {
+            fs.writeFileSync(pagePath, pageJson);
+        } catch (err) {
+            throw (`Failed to write file: ${pagePath}`);
+        }
     }
 
     filenameFromIsoTimestamp(timestamp) {

@@ -14,7 +14,7 @@ const siteUrl = options.url;
 const input = pathToFileURL(path.resolve(options.input)).href;
 const outputDir = path.resolve(options.output);
 
-const posts = await import(input, {with: {type: 'json'}});
+const { default: posts } = await import(input, {with: {type: 'json'}});
 
 const generator = new Generator();
 generator.generate(siteUrl, outputDir, posts);
