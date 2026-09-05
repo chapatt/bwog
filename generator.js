@@ -4,7 +4,7 @@ import path from 'path';
 import beautify from 'js-beautify';
 import { minify } from 'html-minifier-next'
 
-module.exports = class Generator {
+class Generator {
     generate(siteUrl, outputDir, posts) {
         const sitemap = [];
         posts.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
@@ -289,4 +289,6 @@ module.exports = class Generator {
         const date = new Date(Date.parse(timestamp));
         return date.toLocaleDateString(undefined, {year: 'numeric', month: 'long'});
     }
-};
+}
+
+export default Generator;

@@ -4,7 +4,7 @@ import beautify from 'js-beautify';
 
 import Generator from './generator.js';
 
-module.exports = class Controller {
+class Controller {
     createPost(formData, user) {
         if (!formData.text && !formData.tracks) {
             return null;
@@ -61,4 +61,6 @@ module.exports = class Controller {
 
         return post;
     }
-};
+}
+
+export default Controller;
