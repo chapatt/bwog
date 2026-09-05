@@ -1,5 +1,6 @@
 import path from 'path';
 import { program } from 'commander';
+import { pathToFileURL } from 'url';
 
 import Generator from './generator.js';
 
@@ -10,7 +11,7 @@ program.requiredOption('-o, --output <string>', 'output directory');
 program.parse();
 const options = program.opts();
 const siteUrl = options.url;
-const input = path.resolve(options.input);
+const input = pathToFileURL(path.resolve(options.input)).href;
 const outputDir = path.resolve(options.output);
 
 const posts = await import(input, {with: {type: 'json'}});
