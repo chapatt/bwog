@@ -13,7 +13,7 @@ const siteUrl = options.url;
 const input = path.resolve(options.input);
 const outputDir = path.resolve(options.output);
 
-const posts = require(input);
+const posts = await import(input);
 
 const generator = new Generator();
 generator.generate(siteUrl, outputDir, posts);
