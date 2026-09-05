@@ -1,7 +1,7 @@
-const { Eta } = require('eta');
-const fs = require('fs');
-const path = require('path');
-const beautify = require('js-beautify');
+import { Eta } from 'eta';
+import fs from 'fs';
+import path from 'path';
+import beautify from 'js-beautify';
 import { minify } from 'html-minifier-next'
 
 module.exports = class Generator {

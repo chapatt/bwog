@@ -1,7 +1,6 @@
-const path = require('path');
-const express = require('express');
+import express from 'express';
 
-const Controller = require(path.resolve(__dirname, '../controller.js'));
+import Controller from '../controller';
 
 const router = express.Router();
 

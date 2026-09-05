@@ -1,9 +1,8 @@
-const path = require('path');
-const express = require('express');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20');
+import express from 'express';
+import passport from 'passport';
+import GoogleStrategy from 'passport-google-oauth20';
 
-const Controller = require(path.resolve(__dirname, '../controller.js'));
+import Controller from '../controller';
 
 passport.use(new GoogleStrategy({
         clientID: process.env['GOOGLE_OAUTH_CLIENT_ID'],

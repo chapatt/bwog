@@ -1,9 +1,8 @@
-const path = require('path');
-const fs = require('fs');
-const short = require('short-uuid');
-const beautify = require('js-beautify');
+import fs from 'fs';
+import short from 'short-uuid';
+import beautify from 'js-beautify';
 
-const Generator = require(path.resolve(__dirname, './generator.js'));
+import Generator from './generator.js';
 
 module.exports = class Controller {
     createPost(formData, user) {

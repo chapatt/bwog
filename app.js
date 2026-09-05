@@ -1,11 +1,12 @@
-const path = require('path');
-require('dotenv').config({path: path.resolve(__dirname, '.env')});
-const express = require('express');
-const session = require('express-session');
-const passport = require('passport');
+import path from 'path';
+import dotenv from 'dotenv';
+dotenv.config({path: path.resolve(__dirname, '.env')});
+import express from 'express';
+import session from 'express-session';
+import passport from 'passport';
 
-const authRouter = require('./routes/auth');
-const editorRouter = require('./routes/editor');
+import authRouter from './routes/auth';
+import editorRouter from './routes/editor';
 
 const app = express();
 app.use(session({
