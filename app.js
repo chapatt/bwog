@@ -2,8 +2,8 @@ import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
 
-import authRouter from './routes/auth';
-import editorRouter from './routes/editor';
+import authRouter from './routes/auth.js';
+import editorRouter from './routes/editor.js';
 
 const app = express();
 app.use(session({

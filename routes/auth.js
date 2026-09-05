@@ -2,7 +2,7 @@ import express from 'express';
 import passport from 'passport';
 import GoogleStrategy from 'passport-google-oauth20';
 
-import Controller from '../controller';
+import Controller from '../controller.js';
 
 passport.use(new GoogleStrategy({
         clientID: process.env['GOOGLE_OAUTH_CLIENT_ID'],
