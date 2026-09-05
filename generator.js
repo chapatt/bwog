@@ -221,7 +221,7 @@ class Generator {
         }
 
         posts.forEach(post => {
-            const url = `${siteUrl}/ap/${post.createdAt.replaceAll(':', '-')}`;
+            const url = `${siteUrl}/ap/notes/${post.createdAt.replaceAll(':', '-')}`;
 
             const noteHtml = minify.minify(Buffer.from(eta.render('./ap_post', {post})), {keep_closing_tags: true}).toString();
 
