@@ -13,7 +13,7 @@ const siteUrl = options.url;
 const input = path.resolve(options.input);
 const outputDir = path.resolve(options.output);
 
-const posts = await import(input);
+const posts = await import(input, {with: {type: 'json'}});
 
 const generator = new Generator();
 generator.generate(siteUrl, outputDir, posts);
