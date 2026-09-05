@@ -1,7 +1,7 @@
-const path = require('path');
-const {program} = require('commander');
+import path from 'path';
+import { program } from 'commander';
 
-const Generator = require(path.resolve(__dirname, 'generator.js'));
+import Generator from './generator.js';
 
 program.description('Generate blog');
 program.requiredOption('-u, --url <string>', 'site URL, e.g. https://example.com');
