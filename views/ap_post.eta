@@ -1,0 +1,13 @@
+<p><%~ it.post.text.replace(/(https:\/\/\S*)/g, '<a href="$1">$1</a>').replaceAll('\n', '<br />') %></p>
+<% if (it.post.type === 'song' || it.post.type === 'album') { %>
+    <p><i><%= `${it.post.artist} -  ${it.post.title}` %></i></p>
+<% } else if (it.post.type === 'playlist') { %>
+    <p>
+        <% it.post.tracks.forEach(function(song, i) { %>
+            <% if (i !== 0) { %>
+                <br />
+            <% } %>
+            <i><%= `${song.artist} -  ${song.title}` %></i>
+        <% }) %>
+    </p>
+<% } %>

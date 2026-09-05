@@ -2,6 +2,7 @@ const { Eta } = require('eta');
 const fs = require('fs');
 const path = require('path');
 const beautify = require('js-beautify');
+import { minify } from 'html-minifier-next'
 
 module.exports = class Generator {
     generate(siteUrl, outputDir, posts) {
@@ -55,10 +56,18 @@ module.exports = class Generator {
                     path.resolve(outputDir, `${this.filenameFromIsoTimestamp(currentMonth)}.html`),
                     previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth),
                     nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth));
+
                 sitemap.push({
                     url: `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
                     updatedAt: currentMonth,
                 });
+
+                this.writeAP(postsByMonth[i],
+                    siteUrl,
+                    outputDir,
+                    this.filenameFromIsoTimestamp(currentMonth),
+                    nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth),
+                    previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth));
             } catch (error) {
                 console.error(error);
                 return;
@@ -188,6 +197,87 @@ module.exports = class Generator {
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
+    }
+
+    writeAP(posts, siteUrl, outputDir, currentMonth, prevPage, nextPage) {
+        const page = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "OrderedCollectionPage",
+            "id": `${siteUrl}/ap/outbox?page=${currentMonth}`,
+            "partOf": `${siteUrl}/ap/outbox`,
+            "prev": `${siteUrl}/ap/outbox?page=${prevPage}`,
+            "next": `${siteUrl}/ap/outbox?page=${nextPage}`,
+            "orderedItems": []
+        };
+
+        if (!prevPage) {
+            delete page.prev;
+        }
+
+        if (!nextPage) {
+            delete page.next;
+        }
+
+        posts.forEach(post => {
+            const url = `${siteUrl}/ap/${post.createdAt}`;
+
+            const noteHtml = minify(eta.render('./ap_post', {post}), {
+               collapseWhitespace: true,
+            });
+
+            const note = {
+                "id": url,
+                "type": "Note",
+                "published": post.createdAt,
+                "url": `${siteUrl}/${currentMonth}`,
+                "attributedTo": `${siteUrl}/ap/actor`,
+                "to": [
+                    `${siteUrl}/ap/followers`
+                ],
+                "cc": [
+                    "https://www.w3.org/ns/activitystreams#Public"
+                ],
+                "sensitive": false,
+                "content": noteHtml
+            };
+
+            const create = {
+                "id": `${url}?activity=true`,
+                "type": "Create",
+                "actor": `${siteUrl}/ap/actor`,
+                "published": post.createdAt,
+                "to": [
+                    `${siteUrl}/ap/followers`
+                ],
+                "cc": [
+                    "https://www.w3.org/ns/activitystreams#Public"
+                ],
+                "object": note
+            };
+
+            page.orderedItems.push(create);
+
+            const notePath = path.resolve(`${outputDir}/ap/notes/`, `${post.createdAt}.json`);
+            const noteJson = beautify.js(
+                JSON.stringify(note),
+                {end_with_newline: true},
+            );
+            fs.writeFileSync(notePath, noteJson);
+
+            const createPath = path.resolve(`${outputDir}/ap/creates/`, `${post.createdAt}.json`);
+            const createJson = beautify.js(
+                JSON.stringify(create),
+                {end_with_newline: true},
+            );
+            fs.writeFileSync(createPath, createJson);
+        });
+
+        const pagePath = path.resolve(`${outputDir}/ap/outbox_pages/`, `${currentMonth}.json`);
+        const pageJson = beautify.js(
+            JSON.stringify(page),
+            {end_with_newline: true},
+        );
+        fs.writeFileSync(pagePath, pageJson);
     }
 
     filenameFromIsoTimestamp(timestamp) {
