@@ -2,7 +2,7 @@ import { Eta } from 'eta';
 import fs from 'fs';
 import path from 'path';
 import beautify from 'js-beautify';
-import { minify } from 'html-minifier-next'
+import minify from '@minify-html/node';
 import {fileURLToPath} from 'url';
 
 class Generator {
@@ -221,11 +221,9 @@ class Generator {
         }
 
         posts.forEach(post => {
-            const url = `${siteUrl}/ap/${post.createdAt}`;
+            const url = `${siteUrl}/ap/${post.createdAt.replaceAll(':', '-')}`;
 
-            const noteHtml = minify(eta.render('./ap_post', {post}), {
-               collapseWhitespace: true,
-            });
+            const noteHtml = minify.minify(Buffer.from(eta.render('./ap_post', {post})), {keep_closing_tags: true}).toString();
 
             const note = {
                 "id": url,
