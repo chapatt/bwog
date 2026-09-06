@@ -44,13 +44,13 @@ router.get('/login', (req, res, next) => {
 router.get('/oauth2/redirect/google',
     passport.authenticate('google', {
         failureRedirect: '/loginFailure'
-    }), (req, res) => {
+    }), async (req, res) => {
         console.log(`user logged in: ${req.user.name} <${req.user.email}>`);
         res.cookie('isAuthed', true);
 
         if (req.authInfo.state.pendingPost) {
             const controller = new Controller();
-            controller.createPost(req.authInfo.state.pendingPost, req.user);
+            await controller.createPost(req.authInfo.state.pendingPost, req.user);
         }
 
         res.redirect('/');

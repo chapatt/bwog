@@ -5,7 +5,7 @@ import beautify from 'js-beautify';
 import Generator from './generator.js';
 
 class Controller {
-    createPost(formData, user) {
+    async createPost(formData, user) {
         if (!formData.text && !formData.tracks) {
             return null;
         }
@@ -40,7 +40,7 @@ class Controller {
                 break;
         }
 
-        const posts = require(process.env['SOURCE_JSON']);
+        const { default: posts } = await import(process.env['SOURCE_JSON'], {with: {type: 'json'}});
         posts.push(post);
 
         try {

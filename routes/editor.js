@@ -4,14 +4,14 @@ import Controller from '../controller.js';
 
 const router = express.Router();
 
-router.post('/post', (req, res) => {
+router.post('/post', async (req, res) => {
     if (!req.isAuthenticated()) {
         req.session.pendingPost = req.body;
         res.redirect('/login');
         return;
     }
     const controller = new Controller();
-    controller.createPost(req.body, req.user);
+    await controller.createPost(req.body, req.user);
     res.redirect('/');
 });
 
