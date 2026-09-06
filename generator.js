@@ -162,7 +162,7 @@ class Generator {
 
             this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
 
-            this.writeAPOutbox(posts, path.resolve(outputDir, '/ap/outbox.json'));
+            this.writeAPOutbox([...posts, newPost], path.resolve(outputDir, '/ap/outbox.json'));
         }
     }
 
