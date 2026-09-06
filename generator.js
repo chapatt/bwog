@@ -63,7 +63,7 @@ class Generator {
                     updatedAt: currentMonth,
                 });
 
-                this.writeAP(postsByMonth[i],
+                this.writeAPOutboxPage(postsByMonth[i],
                     siteUrl,
                     outputDir,
                     this.filenameFromIsoTimestamp(currentMonth),
@@ -76,6 +76,8 @@ class Generator {
         }
 
         this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
+
+        this.writeAPOutbox(posts, siteUrl, path.resolve(outputDir, './ap/outbox.json'));
     }
 
     generatePartial(siteUrl, outputDir, posts, newPost) {
@@ -99,6 +101,13 @@ class Generator {
                 path.resolve(outputDir, `${this.filenameFromIsoTimestamp(newPost.createdAt)}.html`),
                 posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null,
                 null);
+
+            this.writeAPOutboxPage(thisMonthPosts,
+                siteUrl,
+                outputDir,
+                this.filenameFromIsoTimestamp(newPost.createdAt),
+                null,
+                posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null);
         } catch (error) {
             console.error(error);
         }
@@ -119,6 +128,13 @@ class Generator {
                         path.resolve(outputDir, `${this.filenameFromIsoTimestamp(posts[1].createdAt)}.html`),
                         posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null,
                         this.filenameFromIsoTimestamp(newPost.createdAt));
+
+                    this.writeAPOutboxPage(lastMonthPosts,
+                        siteUrl,
+                        outputDir,
+                        this.filenameFromIsoTimestamp(posts[1].createdAt),
+                        this.filenameFromIsoTimestamp(newPost.createdAt),
+                        posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null);
                 } catch (error) {
                     console.error(error);
                 }
@@ -145,6 +161,8 @@ class Generator {
             }));
 
             this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
+
+            this.writeAPOutbox(posts, path.resolve(outputDir, '/ap/outbox.json'));
         }
     }
 
@@ -181,6 +199,30 @@ class Generator {
         }
     }
 
+    writeAPOutbox(posts, siteUrl, file) {
+        const url = `${siteUrl}/ap/outbox`;
+        const first = this.filenameFromIsoTimestamp(new Date(Date.parse(posts[0].createdAt)));
+        const last = this.filenameFromIsoTimestamp(new Date(Date.parse(posts[posts.length - 1].createdAt)));
+
+        const outbox = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "type": "OrderedCollection",
+            "totalItems": posts.length,
+            "first": `${url}?page=${first}`,
+            "last": `${url}?page=${last}`
+        }
+
+        const json = beautify.js(
+            JSON.stringify(outbox),
+            {end_with_newline: true},
+        );
+        try {
+            fs.writeFileSync(file, json);
+        } catch (err) {
+            throw (`Failed to write file: ${file}`);
+        }
+    }
+
     writePage(posts, title, canonical, file, prevPage, nextPage) {
         const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const html = beautify.html(
@@ -200,7 +242,7 @@ class Generator {
         }
     }
 
-    writeAP(posts, siteUrl, outputDir, currentMonth, prevPage, nextPage) {
+    writeAPOutboxPage(posts, siteUrl, outputDir, currentMonth, prevPage, nextPage) {
         const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const page = {
             "@context": "https://www.w3.org/ns/activitystreams",
