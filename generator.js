@@ -263,7 +263,7 @@ class Generator {
         }
 
         posts.forEach(post => {
-            const url = `${siteUrl}/ap/notes/${post.createdAt.replaceAll(':', '-')}`;
+            const url = `${siteUrl}/ap/notes/${post.id}`;
 
             const noteHtml = minify.minify(Buffer.from(eta.render('./ap_post', {post})), {keep_closing_tags: true}).toString();
 
@@ -299,7 +299,7 @@ class Generator {
 
             page.orderedItems.push(create);
 
-            const notePath = path.resolve(`${outputDir}/ap/notes/`, `${post.createdAt.replaceAll(':', '-')}.json`);
+            const notePath = path.resolve(`${outputDir}/ap/notes/`, `${post.id}.json`);
             const noteJson = beautify.js(
                 JSON.stringify(note),
                 {end_with_newline: true},
@@ -310,7 +310,7 @@ class Generator {
                 throw (`Failed to write file: ${notePath}`);
             }
 
-            const createPath = path.resolve(`${outputDir}/ap/creates/`, `${post.createdAt.replaceAll(':', '-')}.json`);
+            const createPath = path.resolve(`${outputDir}/ap/creates/`, `${post.id}.json`);
             const createJson = beautify.js(
                 JSON.stringify(create),
                 {end_with_newline: true},
