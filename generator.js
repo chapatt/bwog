@@ -224,7 +224,7 @@ class Generator {
         const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const translator = createTranslator();
 
-        const latestPosts = posts.slice(0, 10);
+        const latestPosts = posts.slice(0, 20);
 
         const postsWithDerivedData = latestPosts.map(post => ({
             ...post,
