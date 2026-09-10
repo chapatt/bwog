@@ -228,6 +228,7 @@ class Generator {
 
         const postsWithDerivedData = latestPosts.map(post => ({
             ...post,
+            title: post.text.replace(/(https:\/\/\S*)/g, '').replaceAll('\n', ' ').replace(/\s\s+/g, ' ').trimEnd(),
             uuid: translator.toUUID(post.id),
             archivePage: `${siteUrl}/${this.filenameFromIsoTimestamp(post.createdAt)}`,
             html: minify.minify(Buffer.from(eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString(),

@@ -12,7 +12,7 @@
     </author>
     <% it.posts.forEach(post => { %>
         <entry>
-            <title><%= post.text %></title>
+            <title><%= post.title %></title>
             <link rel="alternate" type="text/html" href="<%= post.archivePage %>"/>
             <id>urn:uuid:<%= post.uuid %></id>
             <published><%= post.createdAt %></published>
