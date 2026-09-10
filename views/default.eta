@@ -12,7 +12,7 @@
     <% if (it.canonical !== null) { %>
         <link rel="canonical" href="<%= it.canonical %>">
     <% } %>
-    <link rel=alternate type="application/atom+xml" href="/feed.atom">
+    <link rel="alternate" type="application/atom+xml" href="/feed.atom">
     <title>music blog<%= it.title === null ? '' : ` (${it.title.toLowerCase()})` %></title>
     <style>
         body {
