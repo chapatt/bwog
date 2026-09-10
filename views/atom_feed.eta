@@ -3,7 +3,7 @@
     <title>music blog</title>
     <id><%= it.siteUrl %></id>
     <icon><%= it.siteUrl %>/favicon.png</icon>
-    <link rel="alternate" href="<%= it.siteUrl %>" />
+    <link rel="alternate" type="text/html" href="<%= it.siteUrl %>" />
     <link rel="self" href="<%= it.siteUrl %>/feed.atom" />
     <updated><%= it.posts[0].createdAt %></updated>
     <author>
