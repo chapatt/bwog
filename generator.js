@@ -199,6 +199,25 @@ class Generator {
         }
     }
 
+    writePage(posts, title, canonical, file, prevPage, nextPage) {
+        const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
+        const html = beautify.html(
+            eta.render('./default', {posts, title, canonical, prevPage, nextPage}), {tab_size: 4, ignore: ['style', 'script']},
+            {
+                end_with_newline: true,
+                space_after_anon_function: true,
+                operator_position: 'after-newline',
+                extra_liners: [],
+            },
+        );
+
+        try {
+            fs.writeFileSync(file, html)
+        } catch (err) {
+            throw (`Failed to write file: ${file}`);
+        }
+    }
+
     writeAPOutbox(posts, siteUrl, file) {
         const url = `${siteUrl}/ap/outbox`;
         const first = this.filenameFromIsoTimestamp(new Date(Date.parse(posts[0].createdAt)));
@@ -218,25 +237,6 @@ class Generator {
         );
         try {
             fs.writeFileSync(file, json);
-        } catch (err) {
-            throw (`Failed to write file: ${file}`);
-        }
-    }
-
-    writePage(posts, title, canonical, file, prevPage, nextPage) {
-        const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
-        const html = beautify.html(
-            eta.render('./default', {posts, title, canonical, prevPage, nextPage}), {tab_size: 4, ignore: ['style', 'script']},
-            {
-                end_with_newline: true,
-                space_after_anon_function: true,
-                operator_position: 'after-newline',
-                extra_liners: [],
-            },
-        );
-
-        try {
-            fs.writeFileSync(file, html)
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
