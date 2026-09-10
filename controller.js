@@ -1,5 +1,5 @@
 import fs from 'fs';
-import short from 'short-uuid';
+import {generate} from 'short-uuid';
 import beautify from 'js-beautify';
 
 import Generator from './generator.js';
@@ -10,7 +10,7 @@ class Controller {
             return null;
         }
         let post = {
-            id: short.generate(),
+            id: generate(),
             author: user.name,
             createdAt: (new Date()).toISOString().split('.')[0] + "Z",
             text: formData.text.replaceAll('\r\n', '\n'),

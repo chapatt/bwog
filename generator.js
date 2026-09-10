@@ -4,6 +4,7 @@ import path from 'path';
 import beautify from 'js-beautify';
 import minify from '@minify-html/node';
 import {fileURLToPath} from 'url';
+import {createTranslator} from 'short-uuid';
 
 class Generator {
     generate(siteUrl, outputDir, posts) {
@@ -32,6 +33,7 @@ class Generator {
 
         try {
             this.generateIndex(siteUrl, outputDir, posts, sitemap);
+            this.writeAtom(siteUrl, posts, path.resolve(outputDir, 'feed.atom'));
         } catch (error) {
             console.error(error);
             return;
@@ -218,6 +220,34 @@ class Generator {
         }
     }
 
+    writeAtom(siteUrl, posts, file) {
+        const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
+        const translator = createTranslator();
+
+        const latestPosts = posts.slice(0, 10);
+
+        const postsWithDerivedData = latestPosts.map(post => ({
+            ...post,
+            uuid: translator.toUUID(post.id),
+            archivePage: `${siteUrl}/${this.filenameFromIsoTimestamp(post.createdAt)}`,
+            html: minify.minify(Buffer.from(eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString(),
+        }));
+
+        const xml = beautify.html(
+            eta.render('./atom_feed', {
+                siteUrl,
+                posts: postsWithDerivedData
+            }),
+            {end_with_newline: true},
+        );
+
+        try {
+            fs.writeFileSync(file, xml)
+        } catch (err) {
+            throw (`Failed to write file: ${file}`);
+        }
+    }
+
     writeAPOutbox(posts, siteUrl, file) {
         const url = `${siteUrl}/ap/outbox`;
         const first = this.filenameFromIsoTimestamp(new Date(Date.parse(posts[0].createdAt)));
@@ -265,7 +295,7 @@ class Generator {
         posts.forEach(post => {
             const url = `${siteUrl}/ap/notes/${post.id}`;
 
-            const noteHtml = minify.minify(Buffer.from(eta.render('./ap_post', {post})), {keep_closing_tags: true}).toString();
+            const noteHtml = minify.minify(Buffer.from(eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString();
 
             const note = {
                 "id": url,

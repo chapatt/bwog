@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <title>music blog</title>
+    <id><%= it.siteUrl %></id>
+    <icon><%= it.siteUrl %>/favicon.png</icon>
+    <link rel="alternate" href="<%= it.siteUrl %>" />
+    <link rel="self" href="<%= it.siteUrl %>/feed.atom" />
+    <updated><%= it.posts[0].createdAt %></updated>
+    <author>
+        <name>music</name>
+        <email>music@openjr.nl</email>
+    </author>
+    <% it.posts.forEach(post => { %>
+        <entry>
+            <title><%= post.text %></title>
+            <link rel="alternate" type="text/html" href="<%= post.archivePage %>"/>
+            <id>urn:uuid:<%= post.uuid %></id>
+            <published><%= post.createdAt %></published>
+            <updated><%= post.createdAt %></updated>
+            <content type="html"><%= post.html %></content>
+        </entry>
+    <% }) %>
+</feed>
