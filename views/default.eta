@@ -12,6 +12,7 @@
     <% if (it.canonical !== null) { %>
         <link rel="canonical" href="<%= it.canonical %>">
     <% } %>
+    <link rel=alternate type="application/atom+xml" href="/feed.atom">
     <title>music blog<%= it.title === null ? '' : ` (${it.title.toLowerCase()})` %></title>
     <style>
         body {
@@ -111,7 +112,7 @@
     </script>
 </head>
 <body>
-    <a class="title" href="..">
+    <a class="title" href="/">
         <svg viewBox="0 0 100 30">
             <path style="fill: #ee009a;" d="m 6,0
                 L 100,0
