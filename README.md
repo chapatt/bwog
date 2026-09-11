@@ -8,7 +8,7 @@ The blog generated is by-and-large a static HTML site. The other component is a 
 
 This structure can be seen in the included example nginx site configuration (any static server and reverse proxy can be used).
 
-The provided site config will need to be edited (for your domain, certificate locations, and ActivityPub Actor handle), or otherwise integrated into your server configuration.
+The provided site config will need to be edited (for your domain, certificate locations, and ActivityPub `Actor` handle), or otherwise integrated into your server configuration.
 
 This block attempts to find a file at the webroot matching the path in the requested URL:
 ```
@@ -36,7 +36,7 @@ location ~ ^/(post|login|logout|oauth2/redirect/google) {
 
 This block uses and the related map only return a resource if the correct WebFinger `acct:` URI is requested.
 
-If you already have a WebFinger system set up on the domain, the data from the generated `{output_dir}/ap/webfinger.json` should be served there.
+If you already have a WebFinger system set up on the domain, the data from the generated `{PUBLIC_PATH}/ap/webfinger.json` should be served there.
 
 ```
 location /.well-known/webfinger {
