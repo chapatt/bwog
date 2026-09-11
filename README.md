@@ -34,7 +34,7 @@ location ~ ^/(post|login|logout|oauth2/redirect/google) {
 
 #### ActivityPub
 
-This block uses and the related map only return a resource if the correct WebFinger `acct:` URI is requested.
+This block uses the related map and only returns a resource if the correct WebFinger `acct:` URI is requested.
 
 If you already have a WebFinger system set up on the domain, the data from the generated `{PUBLIC_PATH}/ap/webfinger.json` should be served there.
 
