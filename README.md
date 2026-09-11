@@ -4,7 +4,11 @@
 ## Architecture
 The blog generated is by-and-large a static HTML site. The other component is a small nodejs app which facilitates adding posts and regenerating the site.
 
+### HTTP Server (NGINX)
+
 This structure can be seen in the included example nginx site configuration (any static server and reverse proxy can be used).
+
+The provided site config will need to be edited (for your domain, certificate locations, and ActivityPub Actor handle), or otherwise integrated into your server configuration.
 
 This block attempts to find a file at the webroot matching the path in the requested URL:
 ```
@@ -25,6 +29,65 @@ location ~ ^/(post|login|logout|oauth2/redirect/google) {
 	proxy_set_header Connection 'upgrade';
 	proxy_set_header Host $host;
 	proxy_cache_bypass $http_upgrade;
+}
+```
+
+#### ActivityPub
+
+This block uses and the related map only return a resource if the correct WebFinger `acct:` URI is requested.
+
+If you already have a WebFinger system set up on the domain, the data from the generated `{output_dir}/ap/webfinger.json` should be served there.
+
+```
+location /.well-known/webfinger {
+	default_type "application/jrd+json";
+	try_files $webfinger_resource =404;
+}
+```
+```
+map $arg_resource $webfinger_resource {
+    "acct:username@example.com" /ap/webfinger.json;
+    "acct%3Ausername%40example.com" /ap/webfinger.json;
+}
+```
+
+The `/ap/actor` resource referenced from the WebFinger is served via a matching file at the relative webroot path.
+```
+location /ap {
+	types { } default_type "application/activity+json";
+	try_files $uri.json =404;
+}
+```
+
+The Outbox index and its pagination are served via the following directives:
+```
+location /ap/outbox {
+	types { } default_type "application/activity+json";
+	try_files $outbox =404;
+}
+```
+```
+map $arg_page $outbox {
+    "" /ap/outbox.json;
+    "~^(?<i>[0-9]+-[0-9]+)?" /ap/outbox_pages/$i.json;
+}
+```
+
+And Notes and their respective Create activities are served via these:
+```
+location /ap/notes {
+	types { } default_type "application/activity+json";
+	try_files $notes =404;
+}
+```
+```
+map $uri $note_id {
+    "~^/ap/notes/(?<id>.+)$" $id;
+}
+
+map $arg_activity $notes {
+    "true" /ap/creates/$note_id.json;
+    default /ap/notes/$note_id.json;
 }
 ```
 
@@ -61,6 +124,9 @@ The path to your source post JSON. This will be updated, and used to generate th
 ```
 SOURCE_JSON=/usr/share/bwog/blog.json
 ```
+
+### Favicon
+Place an image to be used as a favicon, ActivityPub icon, and Atom feed icon at the server webroot (`.env` `PUBLIC_PATH`). A 400px square png works well.
 
 ## Post data
 The source JSON has the following structure. Note the three types and following related properties. `id` is a base58 UUIDv4.
