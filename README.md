@@ -183,3 +183,5 @@ node generate_site.js -u https://example.com -i blog.json -o /var/www/example
 A sitemap is generated at `/sitemap.xml`.
 
 An Atom feed of the most recent 20 posts is generated at `/feed.atom`.
+
+The ActivityPub protocol is implemented to the extent that an `Actor` is discoverable and all of the posts are accessible via the linked outbox.
