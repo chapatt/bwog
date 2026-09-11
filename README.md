@@ -181,3 +181,5 @@ node generate_site.js -u https://example.com -i blog.json -o /var/www/example
 
 ## Interfaces & Protocols
 A sitemap is generated at `/sitemap.xml`.
+
+An Atom feed of the most recent 20 posts is generated at `/feed.atom`.
