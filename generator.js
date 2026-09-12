@@ -7,7 +7,7 @@ import {fileURLToPath} from 'url';
 import {createTranslator} from 'short-uuid';
 
 class Generator {
-    generate(siteUrl, outputDir, posts) {
+    generate(siteUrl, outputDir, authorName, authorEmail, apHandle, apUsername, apPublicKey, posts) {
         const sitemap = [];
         posts.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
 
@@ -78,8 +78,9 @@ class Generator {
         }
 
         this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
-
         this.writeAPOutbox(posts, siteUrl, path.resolve(outputDir, './ap/outbox.json'));
+        this.writeAPWebfinger(siteUrl, apHandle, path.resolve(outputDir, './ap/webfinger.json'));
+        this.writeAPActor(siteUrl, apUsername, apPublicKey, authorName, path.resolve(outputDir, './ap/actor.json'));
     }
 
     generatePartial(siteUrl, outputDir, posts, newPost) {
@@ -244,6 +245,73 @@ class Generator {
 
         try {
             fs.writeFileSync(file, xml)
+        } catch (err) {
+            throw (`Failed to write file: ${file}`);
+        }
+    }
+
+    writeAPWebfinger(siteUrl, apHandle, file) {
+        const webfinger = {
+            "subject": `acct:${apHandle}`,
+            "aliases": [
+                siteUrl
+            ],
+            "links": [
+                {
+                    "rel": "self",
+                    "type": "application/activity+json",
+                    "href": `${siteUrl}/ap/actor`
+                },
+                {
+                    "rel": "http://webfinger.net/rel/profile-page",
+                    "type": "text/html",
+                    "href": siteUrl
+                }
+            ]
+        };
+
+        const json = beautify.js(
+            JSON.stringify(webfinger),
+            {end_with_newline: true},
+        );
+        try {
+            fs.writeFileSync(file, json);
+        } catch (err) {
+            throw (`Failed to write file: ${file}`);
+        }
+    }
+
+    writeAPActor(siteUrl, apUsername, apPublicKey, authorName, file) {
+        const actor = {
+            "@context": [
+                "https://www.w3.org/ns/activitystreams",
+                "https://w3id.org/security/v1"
+            ],
+            "id": `${siteUrl}/ap/actor`,
+            "type": "Person",
+            "preferredUsername": apUsername,
+            "name": authorName,
+            "inbox": `${siteUrl}/ap/inbox`,
+            "outbox": `${siteUrl}/ap/outbox`,
+            "icon": {
+                "type": "Image",
+                "mediaType": "image/png",
+                "url": `${siteUrl}/favicon.png`
+            },
+            "url": siteUrl,
+            "publicKey": {
+            "id": `${siteUrl}/ap/actor#main-key`,
+                "owner": `${siteUrl}/ap/actor`,
+                "publicKeyPem": apPublicKey
+            }
+        }
+
+        const json = beautify.js(
+            JSON.stringify(actor),
+            {end_with_newline: true},
+        );
+        try {
+            fs.writeFileSync(file, json);
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
