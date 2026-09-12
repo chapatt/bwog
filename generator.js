@@ -33,7 +33,7 @@ class Generator {
 
         try {
             this.generateIndex(siteUrl, outputDir, posts, sitemap);
-            this.writeAtom(siteUrl, posts, path.resolve(outputDir, 'feed.atom'));
+            this.writeAtom(siteUrl, authorName, authorEmail, posts, path.resolve(outputDir, 'feed.atom'));
         } catch (error) {
             console.error(error);
             return;
@@ -83,11 +83,12 @@ class Generator {
         this.writeAPActor(siteUrl, apUsername, apPublicKey, authorName, path.resolve(outputDir, './ap/actor.json'));
     }
 
-    generatePartial(siteUrl, outputDir, posts, newPost) {
+    generatePartial(siteUrl, authorName, authorEmail, outputDir, posts, newPost) {
         const sitemap = [];
         posts.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
 
         this.generateIndex(siteUrl, outputDir, posts, sitemap);
+        this.writeAtom(siteUrl, authorName, authorEmail, posts, path.resolve(outputDir, 'feed.atom'));
 
         const newPostDate = new Date(Date.parse(newPost.createdAt));
         const thisMonthPosts = posts.filter(post => {
@@ -165,7 +166,7 @@ class Generator {
 
             this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
 
-            this.writeAPOutbox([...posts, newPost], path.resolve(outputDir, '/ap/outbox.json'));
+            this.writeAPOutbox(posts, path.resolve(outputDir, '/ap/outbox.json'));
         }
     }
 
@@ -221,7 +222,7 @@ class Generator {
         }
     }
 
-    writeAtom(siteUrl, posts, file) {
+    writeAtom(siteUrl, authorName, authorEmail, posts, file) {
         const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const translator = createTranslator();
 
@@ -238,6 +239,8 @@ class Generator {
         const xml = beautify.html(
             eta.render('./atom_feed', {
                 siteUrl,
+                authorName,
+                authorEmail,
                 posts: postsWithDerivedData
             }),
             {end_with_newline: true},

@@ -3,6 +3,7 @@ import {generate} from 'short-uuid';
 import beautify from 'js-beautify';
 
 import Generator from './generator.js';
+import path from "path";
 
 class Controller {
     async createPost(formData, user) {
@@ -54,7 +55,7 @@ class Controller {
         }
 
         const generator = new Generator();
-        generator.generatePartial(`https://${process.env['SITE_DOMAIN']}`, process.env['PUBLIC_PATH'], posts, post);
+        generator.generatePartial(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], process.env['PUBLIC_PATH'], posts, post);
 
         console.log(`user posted: ${user.name} <${user.email}>`);
         console.log(post);

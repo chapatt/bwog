@@ -7,8 +7,8 @@
     <link rel="self" href="<%= it.siteUrl %>/feed.atom" />
     <updated><%= it.posts[0].createdAt %></updated>
     <author>
-        <name>music</name>
-        <email>music@openjr.nl</email>
+        <name><%= it.authorName %></name>
+        <email><%= it.authorEmail %></email>
     </author>
     <% it.posts.forEach(post => { %>
         <entry>
