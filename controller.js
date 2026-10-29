@@ -1,10 +1,13 @@
-import fs from 'fs';
 import {generate} from 'short-uuid';
 import beautify from 'js-beautify';
 
 import Generator from './generator.js';
 
 class Controller {
+    constructor(store) {
+        this.store = store;
+    }
+
     async createPost(formData, user) {
         if (!formData.text && !formData.tracks) {
             return null;
@@ -48,12 +51,12 @@ class Controller {
                 JSON.stringify(posts),
                 {end_with_newline: true},
             );
-            fs.writeFileSync(process.env['SOURCE_JSON'], json);
+            this.store.write(process.env['SOURCE_JSON'], json);
         } catch (err) {
             throw (`Failed to write file: ${process.env['SOURCE_JSON']}`);
         }
 
-        const generator = new Generator();
+        const generator = new Generator(this.store);
         generator.generatePartial(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], process.env['PUBLIC_PATH'], posts, post);
 
         console.log(`user posted: ${user.name} <${user.email}>`);

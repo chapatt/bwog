@@ -1,6 +1,7 @@
 import express from 'express';
 
 import Controller from '../controller.js';
+import NodeFsStore from '../stores/nodeFsStore.js';
 
 const router = express.Router();
 
@@ -10,7 +11,10 @@ router.post('/post', async (req, res) => {
         res.redirect('/login');
         return;
     }
-    const controller = new Controller();
+
+    const store = new NodeFsStore();
+
+    const controller = new Controller(store);
     await controller.createPost(req.body, req.user);
     res.redirect('/');
 });

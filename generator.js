@@ -1,13 +1,15 @@
 import { Eta } from 'eta';
-import fs from 'fs';
-import path from 'path';
 import beautify from 'js-beautify';
 import minify from '@minify-html/node';
 import {fileURLToPath} from 'url';
 import {createTranslator} from 'short-uuid';
 
 class Generator {
-    generate(siteUrl, outputDir, authorName, authorEmail, apHandle, apUsername, apPublicKey, posts) {
+    constructor(store) {
+        this.store = store;
+    }
+
+    generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey, posts) {
         const sitemap = [];
         posts.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
 
@@ -32,8 +34,8 @@ class Generator {
         }, []);
 
         try {
-            this.generateIndex(siteUrl, outputDir, posts, sitemap);
-            this.writeAtom(siteUrl, authorName, authorEmail, posts, path.resolve(outputDir, 'feed.atom'));
+            this.generateIndex(siteUrl, posts, sitemap);
+            this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom');
         } catch (error) {
             console.error(error);
             return;
@@ -56,7 +58,7 @@ class Generator {
                 this.writePage(postsByMonth[i],
                     this.displayMonthFromIsoTimestamp(currentMonth),
                     `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
-                    path.resolve(outputDir, `${this.filenameFromIsoTimestamp(currentMonth)}.html`),
+                    `${this.filenameFromIsoTimestamp(currentMonth)}.html`,
                     previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth),
                     nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth));
 
@@ -67,7 +69,6 @@ class Generator {
 
                 this.writeAPOutboxPage(postsByMonth[i],
                     siteUrl,
-                    outputDir,
                     this.filenameFromIsoTimestamp(currentMonth),
                     nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth),
                     previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth));
@@ -77,18 +78,18 @@ class Generator {
             }
         }
 
-        this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
-        this.writeAPOutbox(posts, siteUrl, path.resolve(outputDir, './ap/outbox.json'));
-        this.writeAPWebfinger(siteUrl, apHandle, path.resolve(outputDir, './ap/webfinger.json'));
-        this.writeAPActor(siteUrl, apUsername, apPublicKey, authorName, path.resolve(outputDir, './ap/actor.json'));
+        this.writeSitemap(sitemap, 'sitemap.xml');
+        this.writeAPOutbox(posts, siteUrl, 'ap/outbox.json');
+        this.writeAPWebfinger(siteUrl, apHandle, 'ap/webfinger.json');
+        this.writeAPActor(siteUrl, apUsername, apPublicKey, authorName, 'ap/actor.json');
     }
 
-    generatePartial(siteUrl, authorName, authorEmail, outputDir, posts, newPost) {
+    generatePartial(siteUrl, authorName, authorEmail, posts, newPost) {
         const sitemap = [];
         posts.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
 
-        this.generateIndex(siteUrl, outputDir, posts, sitemap);
-        this.writeAtom(siteUrl, authorName, authorEmail, posts, path.resolve(outputDir, 'feed.atom'));
+        this.generateIndex(siteUrl, posts, sitemap);
+        this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom');
 
         const newPostDate = new Date(Date.parse(newPost.createdAt));
         const thisMonthPosts = posts.filter(post => {
@@ -102,13 +103,12 @@ class Generator {
             this.writePage(thisMonthPosts,
                 this.displayMonthFromIsoTimestamp(newPost.createdAt),
                 `${siteUrl}/${this.filenameFromIsoTimestamp(newPost.createdAt)}`,
-                path.resolve(outputDir, `${this.filenameFromIsoTimestamp(newPost.createdAt)}.html`),
+                `${this.filenameFromIsoTimestamp(newPost.createdAt)}.html`,
                 posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null,
                 null);
 
             this.writeAPOutboxPage(thisMonthPosts,
                 siteUrl,
-                outputDir,
                 this.filenameFromIsoTimestamp(newPost.createdAt),
                 null,
                 posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null);
@@ -129,13 +129,12 @@ class Generator {
                     this.writePage(lastMonthPosts,
                         this.displayMonthFromIsoTimestamp(posts[1].createdAt),
                         `${siteUrl}/${this.filenameFromIsoTimestamp(posts[1].createdAt)}`,
-                        path.resolve(outputDir, `${this.filenameFromIsoTimestamp(posts[1].createdAt)}.html`),
+                        `${this.filenameFromIsoTimestamp(posts[1].createdAt)}.html`,
                         posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null,
                         this.filenameFromIsoTimestamp(newPost.createdAt));
 
                     this.writeAPOutboxPage(lastMonthPosts,
                         siteUrl,
-                        outputDir,
                         this.filenameFromIsoTimestamp(posts[1].createdAt),
                         this.filenameFromIsoTimestamp(newPost.createdAt),
                         posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null);
@@ -164,20 +163,20 @@ class Generator {
                 updatedAt: month,
             }));
 
-            this.writeSitemap(sitemap, path.resolve(outputDir, 'sitemap.xml'));
+            this.writeSitemap(sitemap, 'sitemap.xml');
 
-            this.writeAPOutbox(posts, path.resolve(outputDir, '/ap/outbox.json'));
+            this.writeAPOutbox(posts, 'ap/outbox.json');
         }
     }
 
-    generateIndex(siteUrl, outputDir, posts, sitemap) {
+    generateIndex(siteUrl, posts, sitemap) {
         const mainPage = posts.slice(0, 10);
 
         try {
             this.writePage(mainPage,
                 null,
                 `${siteUrl}/`,
-                path.resolve(outputDir, 'index.html'),
+                'index.html',
                 this.filenameFromIsoTimestamp(posts[10].createdAt),
                 null);
             sitemap.push({
@@ -197,7 +196,7 @@ class Generator {
         );
 
         try {
-            fs.writeFileSync(file, xml)
+            this.store.write(file, xml)
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
@@ -216,7 +215,7 @@ class Generator {
         );
 
         try {
-            fs.writeFileSync(file, html)
+            this.store.write(file, html)
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
@@ -247,7 +246,7 @@ class Generator {
         );
 
         try {
-            fs.writeFileSync(file, xml)
+            this.store.write(file, xml)
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
@@ -278,7 +277,7 @@ class Generator {
             {end_with_newline: true},
         );
         try {
-            fs.writeFileSync(file, json);
+            this.store.write(file, json);
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
@@ -314,7 +313,7 @@ class Generator {
             {end_with_newline: true},
         );
         try {
-            fs.writeFileSync(file, json);
+            this.store.write(file, json);
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
@@ -338,13 +337,13 @@ class Generator {
             {end_with_newline: true},
         );
         try {
-            fs.writeFileSync(file, json);
+            this.store.write(file, json);
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
     }
 
-    writeAPOutboxPage(posts, siteUrl, outputDir, currentMonth, prevPage, nextPage) {
+    writeAPOutboxPage(posts, siteUrl, currentMonth, prevPage, nextPage) {
         const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const page = {
             "@context": "https://www.w3.org/ns/activitystreams",
@@ -401,36 +400,36 @@ class Generator {
 
             page.orderedItems.push(create);
 
-            const notePath = path.resolve(`${outputDir}/ap/notes/`, `${post.id}.json`);
+            const notePath = `ap/notes/${post.id}.json`;
             const noteJson = beautify.js(
                 JSON.stringify(note),
                 {end_with_newline: true},
             );
             try {
-                fs.writeFileSync(notePath, noteJson);
+                this.store.write(notePath, noteJson);
             } catch (err) {
                 throw (`Failed to write file: ${notePath}`);
             }
 
-            const createPath = path.resolve(`${outputDir}/ap/creates/`, `${post.id}.json`);
+            const createPath = `ap/creates/${post.id}.json`;
             const createJson = beautify.js(
                 JSON.stringify(create),
                 {end_with_newline: true},
             );
             try {
-                fs.writeFileSync(createPath, createJson);
+                this.store.write(createPath, createJson);
             } catch (err) {
                 throw (`Failed to write file: ${createPath}`);
             }
         });
 
-        const pagePath = path.resolve(`${outputDir}/ap/outbox_pages/`, `${currentMonth}.json`);
+        const pagePath = `ap/outbox_pages/${currentMonth}.json`;
         const pageJson = beautify.js(
             JSON.stringify(page),
             {end_with_newline: true},
         );
         try {
-            fs.writeFileSync(pagePath, pageJson);
+            this.store.write(pagePath, pageJson);
         } catch (err) {
             throw (`Failed to write file: ${pagePath}`);
         }

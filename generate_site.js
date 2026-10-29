@@ -4,6 +4,7 @@ import { program } from 'commander';
 import { pathToFileURL } from 'url';
 
 import Generator from './generator.js';
+import NodeFsStore from "./stores/nodeFsStore.js";
 
 program.description('Generate blog');
 program.requiredOption('-u, --url <string>', 'site URL, e.g. https://example.com');
@@ -24,8 +25,12 @@ const authorEmail = options.email;
 const apHandle = options.ap_handle;
 const apUsername = options.ap_username;
 const apPublicKey = fs.readFileSync(options.ap_public_key, 'utf8').replaceAll('\r\n', '\n').trimEnd();
+fs.mkdirSync(path.resolve(outputDir, 'ap/notes'), {recursive: true});
+fs.mkdirSync(path.resolve(outputDir, 'ap/creates'), {recursive: true});
+fs.mkdirSync(path.resolve(outputDir, 'ap/outbox_pages'), {recursive: true});
 
 const { default: posts } = await import(input, {with: {type: 'json'}});
 
-const generator = new Generator();
-generator.generate(siteUrl, outputDir, authorName, authorEmail, apHandle, apUsername, apPublicKey, posts);
+const store = new NodeFsStore(outputDir);
+const generator = new Generator(store);
+generator.generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey, posts);
