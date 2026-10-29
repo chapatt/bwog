@@ -3,7 +3,6 @@ import {generate} from 'short-uuid';
 import beautify from 'js-beautify';
 
 import Generator from './generator.js';
-import path from "path";
 
 class Controller {
     async createPost(formData, user) {
