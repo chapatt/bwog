@@ -1,11 +1,11 @@
 import {generate} from 'short-uuid';
-import beautify from 'js-beautify';
 
 import Generator from './generator.js';
 
 class Controller {
-    constructor(store) {
+    constructor(store, database) {
         this.store = store;
+        this.database = database;
     }
 
     async createPost(formData, user) {
@@ -43,21 +43,10 @@ class Controller {
                 break;
         }
 
-        const { default: posts } = await import(process.env['SOURCE_JSON'], {with: {type: 'json'}});
-        posts.push(post);
+        this.database.createPost(post);
 
-        try {
-            const json = beautify.js(
-                JSON.stringify(posts),
-                {end_with_newline: true},
-            );
-            this.store.write(process.env['SOURCE_JSON'], json);
-        } catch (err) {
-            throw (`Failed to write file: ${process.env['SOURCE_JSON']}`);
-        }
-
-        const generator = new Generator(this.store);
-        generator.generatePartial(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], process.env['PUBLIC_PATH'], posts, post);
+        const generator = new Generator(this.store, this.database);
+        generator.generatePartial(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], process.env['PUBLIC_PATH'], post);
 
         console.log(`user posted: ${user.name} <${user.email}>`);
         console.log(post);

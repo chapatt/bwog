@@ -2,6 +2,7 @@ import express from 'express';
 
 import Controller from '../controller.js';
 import NodeFsStore from '../stores/nodeFsStore.js';
+import JsonDatabase from '../database/JsonDatabase.js';
 
 const router = express.Router();
 
@@ -13,8 +14,10 @@ router.post('/post', async (req, res) => {
     }
 
     const store = new NodeFsStore();
+    const database = new JsonDatabase(process.env['SOURCE_JSON']);
+    await database.connect();
 
-    const controller = new Controller(store);
+    const controller = new Controller(store, database);
     await controller.createPost(req.body, req.user);
     res.redirect('/');
 });

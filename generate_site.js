@@ -29,8 +29,9 @@ fs.mkdirSync(path.resolve(outputDir, 'ap/notes'), {recursive: true});
 fs.mkdirSync(path.resolve(outputDir, 'ap/creates'), {recursive: true});
 fs.mkdirSync(path.resolve(outputDir, 'ap/outbox_pages'), {recursive: true});
 
-const { default: posts } = await import(input, {with: {type: 'json'}});
+const database = new JsonDatabase(input);
+await database.connect();
 
 const store = new NodeFsStore(outputDir);
-const generator = new Generator(store);
-generator.generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey, posts);
+const generator = new Generator(store, database);
+generator.generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey);

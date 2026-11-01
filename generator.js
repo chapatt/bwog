@@ -5,13 +5,14 @@ import {fileURLToPath} from 'url';
 import {createTranslator} from 'short-uuid';
 
 class Generator {
-    constructor(store) {
+    constructor(store, database) {
         this.store = store;
+        this.database = database;
     }
 
-    generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey, posts) {
+    generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey) {
+        const posts = this.database.getAll();
         const sitemap = [];
-        posts.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
 
         const postsByMonth = posts.reduce((acc, post) => {
             let currentMonth = null;
@@ -84,9 +85,9 @@ class Generator {
         this.writeAPActor(siteUrl, apUsername, apPublicKey, authorName, 'ap/actor.json');
     }
 
-    generatePartial(siteUrl, authorName, authorEmail, posts, newPost) {
+    generatePartial(siteUrl, authorName, authorEmail, newPost) {
+        const posts = this.database.getLastTwoMonthsAtLeast20();
         const sitemap = [];
-        posts.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
 
         this.generateIndex(siteUrl, posts, sitemap);
         this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom');
@@ -94,6 +95,7 @@ class Generator {
         const newPostDate = new Date(Date.parse(newPost.createdAt));
         const thisMonthPosts = posts.filter(post => {
             const postDate = new Date(Date.parse(post.createdAt));
+
             return postDate.getFullYear() === newPostDate.getFullYear()
                 && postDate.getMonth() === newPostDate.getMonth()
         });
