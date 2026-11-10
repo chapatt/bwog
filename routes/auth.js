@@ -52,7 +52,7 @@ router.get('/oauth2/redirect/google',
         res.cookie('isAuthed', true);
 
         if (req.authInfo.state.pendingPost) {
-            const store = new NodeFsStore();
+            const store = new NodeFsStore(process.env['PUBLIC_PATH']);
             let database;
             switch (process.env['DATABASE_TYPE']) {
             case 'JSON':

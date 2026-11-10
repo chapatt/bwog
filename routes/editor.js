@@ -14,7 +14,7 @@ router.post('/post', async (req, res) => {
         return;
     }
 
-    const store = new NodeFsStore();
+    const store = new NodeFsStore(process.env['PUBLIC_PATH']);
     let database;
     switch (process.env['DATABASE_TYPE']) {
     case 'JSON':
