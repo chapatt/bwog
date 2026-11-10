@@ -3,6 +3,9 @@ import passport from 'passport';
 import GoogleStrategy from 'passport-google-oauth20';
 
 import Controller from '../controller.js';
+import NodeFsStore from "../stores/NodeFsStore.js";
+import JsonDatabase from "../databases/JsonDatabase.js";
+import SqliteDatabase from "../databases/SqliteDatabase.js";
 
 passport.use(new GoogleStrategy({
         clientID: process.env['GOOGLE_OAUTH_CLIENT_ID'],
@@ -49,7 +52,18 @@ router.get('/oauth2/redirect/google',
         res.cookie('isAuthed', true);
 
         if (req.authInfo.state.pendingPost) {
-            const controller = new Controller();
+            const store = new NodeFsStore();
+            let database;
+            switch (process.env['DATABASE_TYPE']) {
+            case 'JSON':
+                database = new JsonDatabase(process.env['DATABSE_FILE']);
+                break;
+            case 'SQLITE':
+                database = new SqliteDatabase(process.env['DATABSE_FILE']);
+                break;
+            }
+            await database.connect();
+            const controller = new Controller(store, database);
             await controller.createPost(req.authInfo.state.pendingPost, req.user);
         }
 
