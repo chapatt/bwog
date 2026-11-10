@@ -1,8 +1,8 @@
 import express from 'express';
 
 import Controller from '../controller.js';
-import NodeFsStore from '../stores/nodeFsStore.js';
-import JsonDatabase from '../database/JsonDatabase.js';
+import NodeFsStore from '../stores/NodeFsStore.js';
+import JsonDatabase from '../databases/JsonDatabase.js';
 
 const router = express.Router();
 

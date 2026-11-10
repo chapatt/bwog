@@ -4,7 +4,8 @@ import { program } from 'commander';
 import { pathToFileURL } from 'url';
 
 import Generator from './generator.js';
-import NodeFsStore from "./stores/nodeFsStore.js";
+import NodeFsStore from './stores/NodeFsStore.js';
+import JsonDatabase from './databases/JsonDatabase.js';
 
 program.description('Generate blog');
 program.requiredOption('-u, --url <string>', 'site URL, e.g. https://example.com');
