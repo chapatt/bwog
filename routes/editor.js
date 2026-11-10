@@ -16,12 +16,12 @@ router.post('/post', async (req, res) => {
 
     const store = new NodeFsStore();
     let database;
-    switch (inputType) {
+    switch (process.env['DATABASE_TYPE']) {
     case 'JSON':
-        database = new JsonDatabase(process.env['DATABSE_FILE']);
+        database = new JsonDatabase(process.env['DATABASE_FILE']);
         break;
     case 'SQLITE':
-        database = new SqliteDatabase(process.env['DATABSE_FILE']);
+        database = new SqliteDatabase(process.env['DATABASE_FILE']);
         break;
     }
     await database.connect();
