@@ -37,8 +37,10 @@ let database;
 switch (inputType) {
     case 'JSON':
         database = new JsonDatabase(input);
+        break;
     case 'SQLITE':
         database = new SqliteDatabase(input);
+        break;
 }
 await database.connect();
 
