@@ -85,7 +85,13 @@ class SqliteDatabase {
     }
 
     createPost(post) {
-        JSON.stringify(post);
+        const insertPost = this.db.prepare('INSERT INTO posts (id, author, created_at, content) VALUES (?, ?, ?, jsonb(?));');
+
+        const content = {...post};
+        delete content.id;
+        delete content.author;
+        delete content.createdAt;
+        insertPost.run(post.id, post.author, post.createdAt, JSON.stringify(content));
     }
 }
 
