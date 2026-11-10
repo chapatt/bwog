@@ -14,12 +14,12 @@ class SqliteDatabase {
             CREATE TABLE posts (
                 id TEXT PRIMARY KEY,
                 author TEXT NOT NULL,
-                createdAt TEXT NOT NULL,
+                created_at TEXT NOT NULL,
                 content JSONB NOT NULL
             );
         `);
 
-        const insertPost = this.db.prepare('INSERT INTO posts (id, author, createdAt, content) VALUES (?, ?, ?, jsonb(?));');
+        const insertPost = this.db.prepare('INSERT INTO posts (id, author, created_at, content) VALUES (?, ?, ?, jsonb(?));');
 
         JsonDatabase.getAll().forEach(post => {
             const content = {...post};
@@ -35,7 +35,7 @@ class SqliteDatabase {
             SELECT
                 id,
                 author,
-                createdAt,
+                created_at,
                 json(content) as content
             FROM posts;
         `).all();
@@ -43,7 +43,7 @@ class SqliteDatabase {
         return rawPosts.map(post => ({
             id: post.id,
             author: post.author,
-            createdAt: post.createdAt,
+            createdAt: post.created_at,
             ...JSON.parse(post.content)
         }));
     }
@@ -68,7 +68,7 @@ class SqliteDatabase {
             SELECT
                 id,
                 author,
-                createdAt,
+                created_at,
                 json(content) as content
             FROM suitability
             WHERE in_latest_two_months = 1
@@ -79,7 +79,7 @@ class SqliteDatabase {
         return rawPosts.map(post => ({
             id: post.id,
             author: post.author,
-            createdAt: post.createdAt,
+            createdAt: post.created_at,
             ...JSON.parse(post.content)
         }));
     }
