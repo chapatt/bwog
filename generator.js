@@ -97,7 +97,7 @@ class Generator {
             const postDate = new Date(Date.parse(post.createdAt));
 
             return postDate.getFullYear() === newPostDate.getFullYear()
-                && postDate.getMonth() === newPostDate.getMonth()
+                && postDate.getMonth() === newPostDate.getMonth();
         });
         const isNewMonth = thisMonthPosts.length === 1;
 
