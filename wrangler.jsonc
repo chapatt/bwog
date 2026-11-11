@@ -1,0 +1,27 @@
+{
+  "name": "bwog",
+  "main": "./cloudflare/worker.js",
+  "upload_source_maps": true,
+  "compatibility_date": "2026-11-11",
+  "secrets_store_secrets": [
+    {
+      "binding": "API_KEY",
+      "store_id": "demo",
+      "secret_name": "api-key"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "DATABASE",
+        "class_name": "Database"
+      }
+    ]
+  },
+  "r2_buckets": [
+    {
+      "binding": "STORE",
+      "bucket_name": "music-blog"
+    }
+  ]
+}

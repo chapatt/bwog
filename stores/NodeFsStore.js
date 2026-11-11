@@ -6,7 +6,7 @@ class NodeFsStore {
         this.outputDir = outputDir;
     }
 
-    write(file, data) {
+    async write(file, data) {
         fs.writeFileSync(path.resolve(this.outputDir, file), data);
     }
 }

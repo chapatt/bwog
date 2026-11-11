@@ -10,8 +10,8 @@ class Generator {
         this.database = database;
     }
 
-    generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey) {
-        const posts = this.database.getAll();
+    async generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey) {
+        const posts = await this.database.getAll();
         const sitemap = [];
 
         const postsByMonth = posts.reduce((acc, post) => {
@@ -35,8 +35,8 @@ class Generator {
         }, []);
 
         try {
-            this.generateIndex(siteUrl, posts, sitemap);
-            this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom');
+            await this.generateIndex(siteUrl, posts, sitemap);
+            await this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom');
         } catch (error) {
             console.error(error);
             return;
@@ -56,7 +56,7 @@ class Generator {
             }
 
             try {
-                this.writePage(postsByMonth[i],
+                await this.writePage(postsByMonth[i],
                     this.displayMonthFromIsoTimestamp(currentMonth),
                     `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
                     `${this.filenameFromIsoTimestamp(currentMonth)}.html`,
@@ -68,7 +68,7 @@ class Generator {
                     updatedAt: currentMonth,
                 });
 
-                this.writeAPOutboxPage(postsByMonth[i],
+                await this.writeAPOutboxPage(postsByMonth[i],
                     siteUrl,
                     this.filenameFromIsoTimestamp(currentMonth),
                     nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth),
@@ -79,18 +79,18 @@ class Generator {
             }
         }
 
-        this.writeSitemap(sitemap, 'sitemap.xml');
-        this.writeAPOutbox(posts, siteUrl, 'ap/outbox.json');
-        this.writeAPWebfinger(siteUrl, apHandle, 'ap/webfinger.json');
-        this.writeAPActor(siteUrl, apUsername, apPublicKey, authorName, 'ap/actor.json');
+        await this.writeSitemap(sitemap, 'sitemap.xml');
+        await this.writeAPOutbox(posts, siteUrl, 'ap/outbox.json');
+        await this.writeAPWebfinger(siteUrl, apHandle, 'ap/webfinger.json');
+        await this.writeAPActor(siteUrl, apUsername, apPublicKey, authorName, 'ap/actor.json');
     }
 
-    generatePartial(siteUrl, authorName, authorEmail, newPost) {
-        const posts = this.database.getLastTwoMonthsAtLeast20();
+    async generatePartial(siteUrl, authorName, authorEmail, newPost) {
+        const posts = await this.database.getLastTwoMonthsAtLeast20();
         const sitemap = [];
 
         this.generateIndex(siteUrl, posts, sitemap);
-        this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom');
+        await this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom');
 
         const newPostDate = new Date(Date.parse(newPost.createdAt));
         const thisMonthPosts = posts.filter(post => {
@@ -102,14 +102,14 @@ class Generator {
         const isNewMonth = thisMonthPosts.length === 1;
 
         try {
-            this.writePage(thisMonthPosts,
+            await this.writePage(thisMonthPosts,
                 this.displayMonthFromIsoTimestamp(newPost.createdAt),
                 `${siteUrl}/${this.filenameFromIsoTimestamp(newPost.createdAt)}`,
                 `${this.filenameFromIsoTimestamp(newPost.createdAt)}.html`,
                 posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null,
                 null);
 
-            this.writeAPOutboxPage(thisMonthPosts,
+            await this.writeAPOutboxPage(thisMonthPosts,
                 siteUrl,
                 this.filenameFromIsoTimestamp(newPost.createdAt),
                 null,
@@ -128,14 +128,14 @@ class Generator {
                 });
 
                 try {
-                    this.writePage(lastMonthPosts,
+                    await this.writePage(lastMonthPosts,
                         this.displayMonthFromIsoTimestamp(posts[1].createdAt),
                         `${siteUrl}/${this.filenameFromIsoTimestamp(posts[1].createdAt)}`,
                         `${this.filenameFromIsoTimestamp(posts[1].createdAt)}.html`,
                         posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null,
                         this.filenameFromIsoTimestamp(newPost.createdAt));
 
-                    this.writeAPOutboxPage(lastMonthPosts,
+                    await this.writeAPOutboxPage(lastMonthPosts,
                         siteUrl,
                         this.filenameFromIsoTimestamp(posts[1].createdAt),
                         this.filenameFromIsoTimestamp(newPost.createdAt),
@@ -165,17 +165,17 @@ class Generator {
                 updatedAt: month,
             }));
 
-            this.writeSitemap(sitemap, 'sitemap.xml');
+            await this.writeSitemap(sitemap, 'sitemap.xml');
 
-            this.writeAPOutbox(posts, 'ap/outbox.json');
+            await this.writeAPOutbox(posts, 'ap/outbox.json');
         }
     }
 
-    generateIndex(siteUrl, posts, sitemap) {
+    async generateIndex(siteUrl, posts, sitemap) {
         const mainPage = posts.slice(0, 10);
 
         try {
-            this.writePage(mainPage,
+            await this.writePage(mainPage,
                 null,
                 `${siteUrl}/`,
                 'index.html',
@@ -190,7 +190,7 @@ class Generator {
         }
     }
 
-    writeSitemap(sitemap, file) {
+    async writeSitemap(sitemap, file) {
         const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const xml = beautify.html(
             eta.render('./sitemap', {pages: sitemap}),
@@ -198,13 +198,13 @@ class Generator {
         );
 
         try {
-            this.store.write(file, xml)
+            await this.store.write(file, xml)
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
     }
 
-    writePage(posts, title, canonical, file, prevPage, nextPage) {
+    async writePage(posts, title, canonical, file, prevPage, nextPage) {
         const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const html = beautify.html(
             eta.render('./default', {posts, title, canonical, prevPage, nextPage}), {tab_size: 4, ignore: ['style', 'script']},
@@ -217,13 +217,13 @@ class Generator {
         );
 
         try {
-            this.store.write(file, html)
+            await this.store.write(file, html)
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
     }
 
-    writeAtom(siteUrl, authorName, authorEmail, posts, file) {
+    async writeAtom(siteUrl, authorName, authorEmail, posts, file) {
         const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const translator = createTranslator();
 
@@ -248,13 +248,13 @@ class Generator {
         );
 
         try {
-            this.store.write(file, xml)
+            await this.store.write(file, xml)
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
     }
 
-    writeAPWebfinger(siteUrl, apHandle, file) {
+    async writeAPWebfinger(siteUrl, apHandle, file) {
         const webfinger = {
             "subject": `acct:${apHandle}`,
             "aliases": [
@@ -279,13 +279,13 @@ class Generator {
             {end_with_newline: true},
         );
         try {
-            this.store.write(file, json);
+            await this.store.write(file, json);
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
     }
 
-    writeAPActor(siteUrl, apUsername, apPublicKey, authorName, file) {
+    async writeAPActor(siteUrl, apUsername, apPublicKey, authorName, file) {
         const actor = {
             "@context": [
                 "https://www.w3.org/ns/activitystreams",
@@ -315,13 +315,13 @@ class Generator {
             {end_with_newline: true},
         );
         try {
-            this.store.write(file, json);
+            await this.store.write(file, json);
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
     }
 
-    writeAPOutbox(posts, siteUrl, file) {
+    async writeAPOutbox(posts, siteUrl, file) {
         const url = `${siteUrl}/ap/outbox`;
         const first = this.filenameFromIsoTimestamp(new Date(Date.parse(posts[0].createdAt)));
         const last = this.filenameFromIsoTimestamp(new Date(Date.parse(posts[posts.length - 1].createdAt)));
@@ -339,13 +339,13 @@ class Generator {
             {end_with_newline: true},
         );
         try {
-            this.store.write(file, json);
+            await this.store.write(file, json);
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
     }
 
-    writeAPOutboxPage(posts, siteUrl, currentMonth, prevPage, nextPage) {
+    async writeAPOutboxPage(posts, siteUrl, currentMonth, prevPage, nextPage) {
         const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const page = {
             "@context": "https://www.w3.org/ns/activitystreams",
@@ -365,7 +365,7 @@ class Generator {
             delete page.next;
         }
 
-        posts.forEach(post => {
+        for (const post of posts) {
             const url = `${siteUrl}/ap/notes/${post.id}`;
 
             const noteHtml = minify.minify(Buffer.from(eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString();
@@ -408,7 +408,7 @@ class Generator {
                 {end_with_newline: true},
             );
             try {
-                this.store.write(notePath, noteJson);
+                await this.store.write(notePath, noteJson);
             } catch (err) {
                 throw (`Failed to write file: ${notePath}`);
             }
@@ -419,11 +419,11 @@ class Generator {
                 {end_with_newline: true},
             );
             try {
-                this.store.write(createPath, createJson);
+                await this.store.write(createPath, createJson);
             } catch (err) {
                 throw (`Failed to write file: ${createPath}`);
             }
-        });
+        }
 
         const pagePath = `ap/outbox_pages/${currentMonth}.json`;
         const pageJson = beautify.js(
@@ -431,7 +431,7 @@ class Generator {
             {end_with_newline: true},
         );
         try {
-            this.store.write(pagePath, pageJson);
+            await this.store.write(pagePath, pageJson);
         } catch (err) {
             throw (`Failed to write file: ${pagePath}`);
         }

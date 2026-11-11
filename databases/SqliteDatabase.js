@@ -9,7 +9,7 @@ class SqliteDatabase {
         this.db = new DatabaseSync(this.file);
     }
 
-    makeFromJsonDatabase(JsonDatabase) {
+    async makeFromJsonDatabase(JsonDatabase) {
         this.db.exec(`
             CREATE TABLE posts (
                 id TEXT PRIMARY KEY,
@@ -30,7 +30,7 @@ class SqliteDatabase {
         });
     }
 
-    getAll() {
+    async getAll() {
         const rawPosts = this.db.prepare(`
             SELECT
                 id,
@@ -48,7 +48,7 @@ class SqliteDatabase {
         }));
     }
 
-    getLastTwoMonthsAtLeast20() {
+    async getLastTwoMonthsAtLeast20() {
         const rawPosts = this.db.prepare(`
             WITH latest_two_months AS (
                 SELECT DISTINCT strftime('%Y-%m', created_at) AS month
@@ -84,7 +84,7 @@ class SqliteDatabase {
         }));
     }
 
-    createPost(post) {
+    async createPost(post) {
         const insertPost = this.db.prepare('INSERT INTO posts (id, author, created_at, content) VALUES (?, ?, ?, jsonb(?));');
 
         const content = {...post};

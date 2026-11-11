@@ -12,15 +12,15 @@ class JsonDatabase {
         this.posts.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
     }
 
-    getAll() {
+    async getAll() {
         return this.posts;
     }
 
-    getLastTwoMonthsAtLeast20() {
+    async getLastTwoMonthsAtLeast20() {
         return this.posts;
     }
 
-    createPost(post) {
+    async createPost(post) {
         this.posts.push(post);
 
         try {

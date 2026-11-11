@@ -46,4 +46,4 @@ await database.connect();
 
 const store = new NodeFsStore(outputDir);
 const generator = new Generator(store, database);
-generator.generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey);
+await generator.generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey);

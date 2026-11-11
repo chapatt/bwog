@@ -17,4 +17,4 @@ await jsonDatabase.connect();
 
 const sqliteDatabase = new SqliteDatabase(sqliteFile);
 await sqliteDatabase.connect();
-sqliteDatabase.makeFromJsonDatabase(jsonDatabase);
+await sqliteDatabase.makeFromJsonDatabase(jsonDatabase);
