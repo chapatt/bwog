@@ -15,7 +15,7 @@ class Controller {
         let post = {
             id: generate(),
             author: user.name,
-            createdAt: (new Date()).toISOString().split('.')[0] + "Z",
+            createdAt: (new Date()).toISOString().split('.')[0] + 'Z',
             text: formData.text.replaceAll('\r\n', '\n'),
         };
         const trackStrings = formData.tracks.replaceAll('\r\n', '\n').split('\n');
