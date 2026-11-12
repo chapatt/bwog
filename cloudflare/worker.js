@@ -30,7 +30,7 @@ app.get('/login', async c => {
     }
 
     const payload = {
-        name: user.name,
+        sub: user,
         exp: Math.floor(Date.now() / 1000) + expirationSeconds,
     }
 
@@ -61,13 +61,13 @@ app.use('/post', (c, next) => jwt({
 })(c, next));
 
 app.post('/post', async c => {
-    const userDisplayName = c.get('jwtPayload').name;
+    const user = c.get('jwtPayload').sub;
     const stub = c.env.DATABASE.getByName('blog-posts');
     const store = new R2Store(c.env.STORE);
     const database = new DurableObjectDatabase(stub);
     const controller = new Controller(store, database);
 
-    await controller.createPost(c.request.body, userDisplayName);
+    await controller.createPost(await c.req.parseBody(), user);
 
     return c.redirect('/');
 });
