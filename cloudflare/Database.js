@@ -39,7 +39,8 @@ class Database extends DurableObject {
                 author,
                 created_at,
                 json(content) as content
-            FROM posts;
+            FROM posts
+            ORDER BY created_at DESC;
         `).toArray();
 
         return rawPosts.map(post => ({
