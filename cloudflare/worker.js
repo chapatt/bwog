@@ -61,7 +61,7 @@ app.use('/post', (c, next) => jwt({
 })(c, next))
 
 app.post('/post', async c => {
-    const userDisplayName = c.json(c.get('jwtPayload')).name;
+    const userDisplayName = c.get('jwtPayload').name;
     const stub = c.env.DATABASE.getByName('blog-posts');
     const store = new R2Store(c.env.STORE);
     const database = new DurableObjectDatabase(stub);
