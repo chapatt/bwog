@@ -4,7 +4,7 @@
     "@hono/oauth-providers": "^0.9.1",
     "@minify-html/wasm": "^0.18.1",
     "commander": "^13.1.0",
-    "eta": "^3.5.0",
+    "eta": "^4.6.0",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
     "hono": "^4.13.18",
