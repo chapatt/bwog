@@ -58,7 +58,7 @@ app.use('/post', (c, next) => jwt({
     secret: c.env.JWT_SECRET,
     alg: 'HS256',
     cookie: 'authToken',
-})(c, next))
+})(c, next));
 
 app.post('/post', async c => {
     const userDisplayName = c.get('jwtPayload').name;
