@@ -13,11 +13,11 @@ const app = new Hono();
 
 app.use(csrf());
 
-app.use('/login', googleAuth({
-    client_id: process.env.GOOGLE_OAUTH_CLIENT_ID,
-    client_secret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+app.use('/login', (c, next) => googleAuth({
+    client_id: c.env.GOOGLE_OAUTH_CLIENT_ID,
+    client_secret: c.env.GOOGLE_OAUTH_CLIENT_SECRET,
     scope: ['email'],
-}));
+})(c, next));
 
 app.get('/login', async c => {
     const expirationSeconds = 60 * 60 * 24 * 7;
@@ -46,11 +46,11 @@ app.get('/login', async c => {
     return c.redirect('/');
 });
 
-app.use('/post', jwt({
-    secret: process.env.JWT_SECRET,
+app.use('/post', (c, next) => jwt({
+    secret: c.env.JWT_SECRET,
     alg: 'HS256',
     cookie: 'auth_token',
-}))
+})(c, next))
 
 app.post('/post', async c => {
     const userDisplayName = c.json(c.get('jwtPayload')).name;
