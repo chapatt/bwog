@@ -61,7 +61,7 @@ class Generator {
                 await this.writePage(postsByMonth[i],
                     this.displayMonthFromIsoTimestamp(currentMonth),
                     `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
-                    `${this.filenameFromIsoTimestamp(currentMonth)}.html`,
+                    this.filenameFromIsoTimestamp(currentMonth),
                     previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth),
                     nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth));
 
@@ -107,7 +107,7 @@ class Generator {
             await this.writePage(thisMonthPosts,
                 this.displayMonthFromIsoTimestamp(newPost.createdAt),
                 `${siteUrl}/${this.filenameFromIsoTimestamp(newPost.createdAt)}`,
-                `${this.filenameFromIsoTimestamp(newPost.createdAt)}.html`,
+                this.filenameFromIsoTimestamp(newPost.createdAt),
                 posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null,
                 null);
 
@@ -133,7 +133,7 @@ class Generator {
                     await this.writePage(lastMonthPosts,
                         this.displayMonthFromIsoTimestamp(posts[1].createdAt),
                         `${siteUrl}/${this.filenameFromIsoTimestamp(posts[1].createdAt)}`,
-                        `${this.filenameFromIsoTimestamp(posts[1].createdAt)}.html`,
+                        this.filenameFromIsoTimestamp(posts[1].createdAt),
                         posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null,
                         this.filenameFromIsoTimestamp(newPost.createdAt));
 
@@ -180,7 +180,7 @@ class Generator {
             await this.writePage(mainPage,
                 null,
                 `${siteUrl}/`,
-                'index.html',
+                'index',
                 this.filenameFromIsoTimestamp(posts[10].createdAt),
                 null);
             sitemap.push({
