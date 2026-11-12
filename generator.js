@@ -1,14 +1,15 @@
 import { Eta } from 'eta';
 import beautify from 'js-beautify';
-import { minify } from '@minify-html/wasm';
-import {fileURLToPath} from 'url';
+import { minify } from 'html-minifier-next';
 import {createTranslator} from 'short-uuid';
+
+import templates from './templates.js';
 
 class Generator {
     constructor(store, database) {
         this.store = store;
         this.database = database;
-        this.eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
+        this.eta = new Eta();
     }
 
     async generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey) {
@@ -193,7 +194,7 @@ class Generator {
 
     async writeSitemap(sitemap, file) {
         const xml = beautify.html(
-            this.eta.render('./sitemap', {pages: sitemap}),
+            templates.sitemap.call(this.eta, {pages: sitemap}),
             {end_with_newline: true},
         );
 
@@ -206,7 +207,7 @@ class Generator {
 
     async writePage(posts, title, canonical, file, prevPage, nextPage) {
         const html = beautify.html(
-            this.eta.renderString('./default', {posts, title, canonical, prevPage, nextPage}), {tab_size: 4, ignore: ['style', 'script']},
+            templates.default.call(this.eta, {posts, title, canonical, prevPage, nextPage}, {tab_size: 4, ignore: ['style', 'script']}),
             {
                 end_with_newline: true,
                 space_after_anon_function: true,
@@ -227,16 +228,16 @@ class Generator {
 
         const latestPosts = posts.slice(0, 20);
 
-        const postsWithDerivedData = latestPosts.map(post => ({
+        const postsWithDerivedData = await Promise.all(latestPosts.map(async post => ({
             ...post,
             title: post.text.replace(/(https:\/\/\S*)/g, '').replaceAll('\n', ' ').replace(/\s\s+/g, ' ').trimEnd() || 'link',
             uuid: translator.toUUID(post.id),
             archivePage: `${siteUrl}/${this.filenameFromIsoTimestamp(post.createdAt)}`,
-            html: minify(Buffer.from(this.eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString(),
-        }));
+            html: await minify(templates.basic_html.call(this.eta, {post})),
+        })));
 
         const xml = beautify.html(
-            this.eta.render('./atom_feed', {
+            templates.atom_feed.call(this.eta, {
                 siteUrl,
                 authorName,
                 authorEmail,
@@ -365,7 +366,7 @@ class Generator {
         for (const post of posts) {
             const url = `${siteUrl}/ap/notes/${post.id}`;
 
-            const noteHtml = minify(Buffer.from(this.eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString();
+            const noteHtml = await minify(templates.basic_html.call(this.eta, {post}))
 
             const note = {
                 "id": url,

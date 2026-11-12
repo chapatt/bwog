@@ -6,29 +6,12 @@ class DurableObjectDatabase {
     async connect() {
     }
 
-    importPosts(posts) {
-        this.db.exec(`
-            CREATE TABLE posts (
-                id TEXT PRIMARY KEY,
-                author TEXT NOT NULL,
-                created_at TEXT NOT NULL,
-                content JSONB NOT NULL
-            );
-        `);
+    async initSchema() {
+        return this.file.initSchema();
+    }
 
-        posts.forEach(post => {
-            const content = {...post};
-            delete content.id;
-            delete content.author;
-            delete content.createdAt;
-            this.db.exec(
-                'INSERT INTO posts (id, author, created_at, content) VALUES (?, ?, ?, jsonb(?));',
-                post.id,
-                post.author,
-                post.createdAt,
-                JSON.stringify(content)
-            );
-        });
+    async importPosts(posts) {
+        return this.file.importPosts(posts);
     }
 
     async getAll() {

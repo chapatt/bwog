@@ -7,6 +7,31 @@ class Database extends DurableObject {
         this.db = ctx.storage.sql;
     }
 
+    initSchema(posts) {
+        this.db.exec(`CREATE TABLE posts (
+            id TEXT PRIMARY KEY,
+            author TEXT  NOT NULL,
+            created_at TEXT  NOT NULL,
+            content JSONB NOT NULL
+        );`);
+    }
+
+    importPosts(posts) {
+        posts.forEach(post => {
+            const content = {...post};
+            delete content.id;
+            delete content.author;
+            delete content.createdAt;
+            this.db.exec(
+                'INSERT INTO posts (id, author, created_at, content) VALUES (?, ?, ?, jsonb(?));',
+                post.id,
+                post.author,
+                post.createdAt,
+                JSON.stringify(content)
+            );
+        });
+    }
+
     getAll() {
         const rawPosts = this.db.exec(`
             SELECT
@@ -15,7 +40,7 @@ class Database extends DurableObject {
                 created_at,
                 json(content) as content
             FROM posts;
-        `);
+        `).toArray();
 
         return rawPosts.map(post => ({
             id: post.id,
@@ -25,7 +50,7 @@ class Database extends DurableObject {
         }));
     }
 
-    async getLastTwoMonthsAtLeast20() {
+    getLastTwoMonthsAtLeast20() {
         const rawPosts = this.db.exec(`
             WITH latest_two_months AS (
                 SELECT DISTINCT strftime('%Y-%m', created_at) AS month
@@ -51,7 +76,7 @@ class Database extends DurableObject {
             WHERE in_latest_two_months = 1
                OR recency <= 20
             ORDER BY created_at DESC;
-        `);
+        `).toArray();
 
         return rawPosts.map(post => ({
             id: post.id,

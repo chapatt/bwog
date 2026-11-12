@@ -7,6 +7,7 @@ import { googleAuth } from '@hono/oauth-providers/google';
 import R2Store from '../stores/R2Store.js';
 import DurableObjectDatabase from '../databases/DurableObjectDatabase.js';
 import Controller from '../controller.js';
+import Generator from '../generator.js';
 
 const app = new Hono();
 
@@ -53,12 +54,29 @@ app.use('/post', c => jwt({
 
 app.post('/post', async c => {
     const userDisplayName = c.json(c.get('jwtPayload')).name;
-    const stub = c.env.DATABASE.getByName('music-blog');
-    const store = new R2Store();
+    const stub = c.env.DATABASE.getByName('blog-posts');
+    const store = new R2Store(c.env.STORE);
     const database = new DurableObjectDatabase(stub);
     const controller = new Controller(store, database);
 
     await controller.createPost(c.request.body, userDisplayName);
+
+    return c.redirect('/');
+});
+
+app.get('/setup', async c => {
+    const stub = c.env.DATABASE.getByName('blog-posts');
+    const store = new R2Store(c.env.STORE);
+    const database = new DurableObjectDatabase(stub);
+    const generator = new Generator(store, database);
+
+    const postsFile = await c.env.PRIVATE_BUCKET.get('posts.json');
+    const posts = await postsFile.json();
+
+    await database.initSchema();
+    await database.importPosts(posts);
+
+    await generator.generate(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], process.env['AP_HANDLE'], process.env['AP_USERNAME'], process.env['AP_PUBLIC_KEY_STRING']);
 
     return c.redirect('/');
 });

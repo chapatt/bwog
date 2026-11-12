@@ -15,6 +15,10 @@
     {
       "binding": "STORE",
       "bucket_name": "blog-public"
+    },
+    {
+      "binding": "PRIVATE_BUCKET",
+      "bucket_name": "blog-private"
     }
   ],
   "exports": {
