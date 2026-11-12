@@ -16,5 +16,11 @@
       "binding": "STORE",
       "bucket_name": "music-blog"
     }
-  ]
+  ],
+  "exports": {
+    "Database": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    }
+  }
 }
