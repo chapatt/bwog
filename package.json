@@ -2,7 +2,7 @@
   "type": "module",
   "dependencies": {
     "@hono/oauth-providers": "^0.9.1",
-    "@minify-html/node": "^0.18.1",
+    "@minify-html/wasm": "^0.18.1",
     "commander": "^13.1.0",
     "eta": "^3.5.0",
     "express": "^5.1.0",

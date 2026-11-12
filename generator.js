@@ -1,6 +1,6 @@
 import { Eta } from 'eta';
 import beautify from 'js-beautify';
-import minify from '@minify-html/node';
+import { minify } from '@minify-html/wasm';
 import {fileURLToPath} from 'url';
 import {createTranslator} from 'short-uuid';
 
@@ -234,7 +234,7 @@ class Generator {
             title: post.text.replace(/(https:\/\/\S*)/g, '').replaceAll('\n', ' ').replace(/\s\s+/g, ' ').trimEnd() || 'link',
             uuid: translator.toUUID(post.id),
             archivePage: `${siteUrl}/${this.filenameFromIsoTimestamp(post.createdAt)}`,
-            html: minify.minify(Buffer.from(eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString(),
+            html: minify(Buffer.from(eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString(),
         }));
 
         const xml = beautify.html(
@@ -368,7 +368,7 @@ class Generator {
         for (const post of posts) {
             const url = `${siteUrl}/ap/notes/${post.id}`;
 
-            const noteHtml = minify.minify(Buffer.from(eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString();
+            const noteHtml = minify(Buffer.from(eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString();
 
             const note = {
                 "id": url,
