@@ -84,7 +84,7 @@ app.get('/setup', async c => {
     await database.initSchema();
     await database.importPosts(posts);
 
-    await generator.generate(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], process.env['AP_HANDLE'], process.env['AP_USERNAME'], process.env['AP_PUBLIC_KEY_STRING']);
+    await generator.generate(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], false);
 
     return c.redirect('/');
 });
@@ -95,7 +95,7 @@ app.get('/generate', async c => {
     const database = new DurableObjectDatabase(stub);
     const generator = new Generator(store, database);
 
-    await generator.generate(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], process.env['AP_HANDLE'], process.env['AP_USERNAME'], process.env['AP_PUBLIC_KEY_STRING']);
+    await generator.generate(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], false);
 
     return c.redirect('/');
 });
