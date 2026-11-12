@@ -3,6 +3,7 @@
   "main": "./cloudflare/worker.js",
   "upload_source_maps": true,
   "compatibility_date": "2026-11-11",
+  "keep_vars": true,
   "durable_objects": {
     "bindings": [
       {
