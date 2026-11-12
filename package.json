@@ -8,9 +8,12 @@
     "express": "^5.1.0",
     "express-session": "^1.18.1",
     "hono": "^4.13.18",
-    "js-beautify": "^1.14.9",
+    "js-beautify": "^2.0.3",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "short-uuid": "^6.0.3"
+  },
+  "scripts": {
+    "build": "node ./compileTemplates.js"
   }
 }
