@@ -46,7 +46,7 @@ class Controller {
         this.database.createPost(post);
 
         const generator = new Generator(this.store, this.database);
-        await generator.generatePartial(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], post);
+        await generator.generatePartial(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], process.env['ENABLE_AP'], post);
 
         console.log(`user posted: ${user.name} <${user.email}>`);
         console.log(post);

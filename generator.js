@@ -12,7 +12,7 @@ class Generator {
         this.eta = new Eta();
     }
 
-    async generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey) {
+    async generate(siteUrl, authorName, authorEmail, enableAP, apHandle, apUsername, apPublicKey) {
         const posts = await this.database.getAll();
         const sitemap = [];
 
@@ -70,11 +70,13 @@ class Generator {
                     updatedAt: currentMonth,
                 });
 
-                await this.writeAPOutboxPage(postsByMonth[i],
-                    siteUrl,
-                    this.filenameFromIsoTimestamp(currentMonth),
-                    nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth),
-                    previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth));
+                if (enableAP) {
+                    await this.writeAPOutboxPage(postsByMonth[i],
+                        siteUrl,
+                        this.filenameFromIsoTimestamp(currentMonth),
+                        nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth),
+                        previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth));
+                }
             } catch (error) {
                 console.error(error);
                 return;
@@ -82,12 +84,15 @@ class Generator {
         }
 
         await this.writeSitemap(sitemap, 'sitemap.xml');
-        await this.writeAPOutbox(posts, siteUrl, 'ap/outbox.json');
-        await this.writeAPWebfinger(siteUrl, apHandle, 'ap/webfinger.json');
-        await this.writeAPActor(siteUrl, apUsername, apPublicKey, authorName, 'ap/actor.json');
+
+        if (enableAP) {
+            await this.writeAPOutbox(posts, siteUrl, 'ap/outbox.json');
+            await this.writeAPWebfinger(siteUrl, apHandle, 'ap/webfinger.json');
+            await this.writeAPActor(siteUrl, apUsername, apPublicKey, authorName, 'ap/actor.json');
+        }
     }
 
-    async generatePartial(siteUrl, authorName, authorEmail, newPost) {
+    async generatePartial(siteUrl, authorName, authorEmail, enableAP, newPost) {
         const posts = await this.database.getLastTwoMonthsAtLeast20();
         const sitemap = [];
 
@@ -111,11 +116,13 @@ class Generator {
                 posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null,
                 null);
 
-            await this.writeAPOutboxPage(thisMonthPosts,
-                siteUrl,
-                this.filenameFromIsoTimestamp(newPost.createdAt),
-                null,
-                posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null);
+            if (enableAP) {
+                await this.writeAPOutboxPage(thisMonthPosts,
+                    siteUrl,
+                    this.filenameFromIsoTimestamp(newPost.createdAt),
+                    null,
+                    posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null);
+            }
         } catch (error) {
             console.error(error);
         }
@@ -137,11 +144,13 @@ class Generator {
                         posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null,
                         this.filenameFromIsoTimestamp(newPost.createdAt));
 
-                    await this.writeAPOutboxPage(lastMonthPosts,
-                        siteUrl,
-                        this.filenameFromIsoTimestamp(posts[1].createdAt),
-                        this.filenameFromIsoTimestamp(newPost.createdAt),
-                        posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null);
+                    if (enableAP) {
+                        await this.writeAPOutboxPage(lastMonthPosts,
+                            siteUrl,
+                            this.filenameFromIsoTimestamp(posts[1].createdAt),
+                            this.filenameFromIsoTimestamp(newPost.createdAt),
+                            posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null);
+                    }
                 } catch (error) {
                     console.error(error);
                 }
@@ -169,7 +178,9 @@ class Generator {
 
             await this.writeSitemap(sitemap, 'sitemap.xml');
 
-            await this.writeAPOutbox(posts, 'ap/outbox.json');
+            if (enableAP) {
+                await this.writeAPOutbox(posts, 'ap/outbox.json');
+            }
         }
     }
 
