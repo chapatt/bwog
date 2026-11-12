@@ -24,7 +24,8 @@ app.get('/login', async c => {
     const user = c.get('user-google');
 
     if (user.id !== c.env.GOOGLE_OAUTH_AUTHORIZED_USER_ID) {
-        deleteCookie(c, 'auth_token');
+        deleteCookie(c, 'authToken');
+        deleteCookie(c, 'isAuthed');
         return c.redirect('/');
     }
 
@@ -35,13 +36,20 @@ app.get('/login', async c => {
 
     const jwtToken = await sign(payload, c.env.JWT_SECRET, 'HS256');
 
-    setCookie(c, 'auth_token', jwtToken, {
+    setCookie(c, 'authToken', jwtToken, {
         path: '/',
         secure: true,
         httpOnly: true,
         sameSite: 'Strict',
         maxAge: expirationSeconds,
-    })
+    });
+    setCookie(c, 'isAuthed', true, {
+        path: '/',
+        secure: true,
+        httpOnly: false,
+        sameSite: 'Strict',
+        maxAge: expirationSeconds,
+    });
 
     return c.redirect('/');
 });
@@ -49,7 +57,7 @@ app.get('/login', async c => {
 app.use('/post', (c, next) => jwt({
     secret: c.env.JWT_SECRET,
     alg: 'HS256',
-    cookie: 'auth_token',
+    cookie: 'authToken',
 })(c, next))
 
 app.post('/post', async c => {
