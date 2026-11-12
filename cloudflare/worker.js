@@ -16,7 +16,7 @@ app.use(csrf());
 app.use('/login', (c, next) => googleAuth({
     client_id: c.env.GOOGLE_OAUTH_CLIENT_ID,
     client_secret: c.env.GOOGLE_OAUTH_CLIENT_SECRET,
-    scope: ['email'],
+    scope: ['openid', 'email', 'profile'],
 })(c, next));
 
 app.get('/login', async c => {
