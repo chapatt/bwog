@@ -13,8 +13,8 @@ const app = new Hono();
 app.use(csrf());
 
 app.use('/login', c => googleAuth({
-    client_id: c.env.GOOGLE_ID,
-    client_secret: c.env.GOOGLE_SECRET,
+    client_id: c.env.GOOGLE_OAUTH_CLIENT_ID,
+    client_secret: c.env.GOOGLE_OAUTH_CLIENT_SECRET,
     scope: ['email'],
 }));
 
