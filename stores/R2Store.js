@@ -3,8 +3,8 @@ class R2Store {
         this.outputDir = outputDir;
     }
 
-    async write(file, data) {
-        await this.outputDir.put(file, data);
+    async write(file, data, mimeType) {
+        await this.outputDir.put(file, data, mimeType && {httpMetadata: {contentType: mimeType}});
     }
 }
 

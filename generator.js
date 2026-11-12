@@ -199,7 +199,7 @@ class Generator {
         );
 
         try {
-            await this.store.write(file, xml)
+            await this.store.write(file, xml, 'application/xml');
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
@@ -217,7 +217,7 @@ class Generator {
         );
 
         try {
-            await this.store.write(file, html)
+            await this.store.write(file, html, 'text/html')
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
@@ -247,7 +247,7 @@ class Generator {
         );
 
         try {
-            await this.store.write(file, xml)
+            await this.store.write(file, xml, 'application/atom+xml')
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
@@ -278,7 +278,7 @@ class Generator {
             {end_with_newline: true},
         );
         try {
-            await this.store.write(file, json);
+            await this.store.write(file, json, 'application/jrd+json');
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
@@ -314,7 +314,7 @@ class Generator {
             {end_with_newline: true},
         );
         try {
-            await this.store.write(file, json);
+            await this.store.write(file, json, 'application/activity+json');
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
@@ -338,7 +338,7 @@ class Generator {
             {end_with_newline: true},
         );
         try {
-            await this.store.write(file, json);
+            await this.store.write(file, json, 'application/activity+json');
         } catch (err) {
             throw (`Failed to write file: ${file}`);
         }
@@ -406,7 +406,7 @@ class Generator {
                 {end_with_newline: true},
             );
             try {
-                await this.store.write(notePath, noteJson);
+                await this.store.write(notePath, noteJson, 'application/activity+json');
             } catch (err) {
                 throw (`Failed to write file: ${notePath}`);
             }
@@ -417,7 +417,7 @@ class Generator {
                 {end_with_newline: true},
             );
             try {
-                await this.store.write(createPath, createJson);
+                await this.store.write(createPath, createJson, 'application/activity+json');
             } catch (err) {
                 throw (`Failed to write file: ${createPath}`);
             }
@@ -429,7 +429,7 @@ class Generator {
             {end_with_newline: true},
         );
         try {
-            await this.store.write(pagePath, pageJson);
+            await this.store.write(pagePath, pageJson, 'application/activity+json');
         } catch (err) {
             throw (`Failed to write file: ${pagePath}`);
         }

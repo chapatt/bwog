@@ -6,8 +6,8 @@ class NodeFsStore {
         this.outputDir = outputDir;
     }
 
-    async write(file, data) {
-        fs.writeFileSync(path.resolve(this.outputDir, file), data);
+    async write(file, data, mimeType) {
+        fs.writeFileSync(path.resolve(this.outputDir, `${file}${mimeType === 'text/html' ? '.html' : ''}`), data);
     }
 }
 
