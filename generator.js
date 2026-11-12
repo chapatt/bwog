@@ -8,6 +8,7 @@ class Generator {
     constructor(store, database) {
         this.store = store;
         this.database = database;
+        this.eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
     }
 
     async generate(siteUrl, authorName, authorEmail, apHandle, apUsername, apPublicKey) {
@@ -191,9 +192,8 @@ class Generator {
     }
 
     async writeSitemap(sitemap, file) {
-        const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const xml = beautify.html(
-            eta.render('./sitemap', {pages: sitemap}),
+            this.eta.render('./sitemap', {pages: sitemap}),
             {end_with_newline: true},
         );
 
@@ -205,9 +205,8 @@ class Generator {
     }
 
     async writePage(posts, title, canonical, file, prevPage, nextPage) {
-        const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const html = beautify.html(
-            eta.render('./default', {posts, title, canonical, prevPage, nextPage}), {tab_size: 4, ignore: ['style', 'script']},
+            this.eta.renderString('./default', {posts, title, canonical, prevPage, nextPage}), {tab_size: 4, ignore: ['style', 'script']},
             {
                 end_with_newline: true,
                 space_after_anon_function: true,
@@ -224,7 +223,6 @@ class Generator {
     }
 
     async writeAtom(siteUrl, authorName, authorEmail, posts, file) {
-        const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const translator = createTranslator();
 
         const latestPosts = posts.slice(0, 20);
@@ -234,11 +232,11 @@ class Generator {
             title: post.text.replace(/(https:\/\/\S*)/g, '').replaceAll('\n', ' ').replace(/\s\s+/g, ' ').trimEnd() || 'link',
             uuid: translator.toUUID(post.id),
             archivePage: `${siteUrl}/${this.filenameFromIsoTimestamp(post.createdAt)}`,
-            html: minify(Buffer.from(eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString(),
+            html: minify(Buffer.from(this.eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString(),
         }));
 
         const xml = beautify.html(
-            eta.render('./atom_feed', {
+            this.eta.render('./atom_feed', {
                 siteUrl,
                 authorName,
                 authorEmail,
@@ -346,7 +344,6 @@ class Generator {
     }
 
     async writeAPOutboxPage(posts, siteUrl, currentMonth, prevPage, nextPage) {
-        const eta = new Eta({views: fileURLToPath(new URL('./views', import.meta.url))});
         const page = {
             "@context": "https://www.w3.org/ns/activitystreams",
             "type": "OrderedCollectionPage",
@@ -368,7 +365,7 @@ class Generator {
         for (const post of posts) {
             const url = `${siteUrl}/ap/notes/${post.id}`;
 
-            const noteHtml = minify(Buffer.from(eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString();
+            const noteHtml = minify(Buffer.from(this.eta.render('./basic_html', {post})), {keep_closing_tags: true}).toString();
 
             const note = {
                 "id": url,
