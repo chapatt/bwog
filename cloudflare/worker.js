@@ -60,7 +60,7 @@ app.use('/post', (c, next) => jwt({
     cookie: 'authToken',
 })(c, next));
 
-app.post('/post', async c => {
+app.post(['/post', '/generate'], async c => {
     const user = c.get('jwtPayload').sub;
     const stub = c.env.DATABASE.getByName('blog-posts');
     const store = new R2Store(c.env.STORE);
@@ -83,6 +83,17 @@ app.get('/setup', async c => {
 
     await database.initSchema();
     await database.importPosts(posts);
+
+    await generator.generate(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], process.env['AP_HANDLE'], process.env['AP_USERNAME'], process.env['AP_PUBLIC_KEY_STRING']);
+
+    return c.redirect('/');
+});
+
+app.get('/generate', async c => {
+    const stub = c.env.DATABASE.getByName('blog-posts');
+    const store = new R2Store(c.env.STORE);
+    const database = new DurableObjectDatabase(stub);
+    const generator = new Generator(store, database);
 
     await generator.generate(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], process.env['AP_HANDLE'], process.env['AP_USERNAME'], process.env['AP_PUBLIC_KEY_STRING']);
 
