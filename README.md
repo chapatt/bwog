@@ -180,7 +180,7 @@ Conversely `/logout` invalidates your session.
 ## CLI utility
 If you need to generate the entire site from the terminal, e.g. if you change a template, you can run it like this:
 ```
-node generate_site.js -u https://example.com -t JSON -i blog.json -o /var/www/example -n 'John Smith' -e 'jsmith@example.com' -a jsmith@example.com -m jsmith -k public.pem
+node scripts/generate_site.js -u https://example.com -t JSON -i blog.json -o /var/www/example -n 'John Smith' -e 'jsmith@example.com' -a jsmith@example.com -m jsmith -k public.pem
 ```
 
 ## Interfaces & Protocols

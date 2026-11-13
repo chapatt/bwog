@@ -3,10 +3,10 @@ import path from 'path';
 import { program, Option } from 'commander';
 import { pathToFileURL } from 'url';
 
-import Generator from './generator.js';
-import NodeFsStore from './stores/NodeFsStore.js';
-import JsonDatabase from './databases/JsonDatabase.js';
-import SqliteDatabase from './databases/SqliteDatabase.js';
+import Generator from '../generator.js';
+import NodeFsStore from '../stores/NodeFsStore.js';
+import JsonDatabase from '../databases/JsonDatabase.js';
+import SqliteDatabase from '../databases/SqliteDatabase.js';
 
 program
     .description('Generate blog')

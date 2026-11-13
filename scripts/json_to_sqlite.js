@@ -1,5 +1,5 @@
-import JsonDatabase from './databases/JsonDatabase.js';
-import SqliteDatabase from './databases/SqliteDatabase.js';
+import JsonDatabase from '../databases/JsonDatabase.js';
+import SqliteDatabase from '../databases/SqliteDatabase.js';
 import { program } from 'commander';
 import {pathToFileURL} from "url";
 import path from "path";
