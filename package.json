@@ -1,4 +1,19 @@
 {
+  "name": "bwog",
+  "version": "0.1.0",
+  "description": "bwog is a toy static site generator for a tumblelog/microblog",
+  "keywords": ["blog", "cms", "fediverse", "microblog", "tumblelog", "smallweb", "static-site-generator", "ssg"],
+  "author": "Chase Patterson (https://github.com/chapatt)",
+  "homepage": "https://github.com/chapatt/bwog",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chapatt/bwog.git"
+  },
+  "bugs": "https://github.com/chapatt/bwog/issues",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.23.5"
+  },
   "type": "module",
   "dependencies": {
     "@hono/oauth-providers": "^0.9.1",
