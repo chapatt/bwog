@@ -19,8 +19,8 @@ class Generator {
         const postsByMonth = posts.reduce((acc, post) => {
             let currentMonth = null;
             if (acc.length > 0) {
-                const lastDate = new Date(Date.parse(acc[acc.length - 1][0].createdAt));
-                const currentDate = new Date(Date.parse(post.createdAt));
+                const lastDate = new Date(acc[acc.length - 1][0].createdAt);
+                const currentDate = new Date(post.createdAt);
                 if (lastDate.getFullYear() === currentDate.getFullYear() && lastDate.getMonth() === currentDate.getMonth()) {
                     currentMonth = acc[acc.length - 1];
                 }
@@ -99,9 +99,9 @@ class Generator {
         this.generateIndex(siteUrl, posts, sitemap);
         await this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom');
 
-        const newPostDate = new Date(Date.parse(newPost.createdAt));
+        const newPostDate = new Date(newPost.createdAt);
         const thisMonthPosts = posts.filter(post => {
-            const postDate = new Date(Date.parse(post.createdAt));
+            const postDate = new Date(post.createdAt);
 
             return postDate.getFullYear() === newPostDate.getFullYear()
                 && postDate.getMonth() === newPostDate.getMonth();
@@ -129,9 +129,9 @@ class Generator {
 
         if (isNewMonth) {
             if (posts.length > 1) {
-                const prevPostDate = new Date(Date.parse(posts[1].createdAt));
+                const prevPostDate = new Date(posts[1].createdAt);
                 const lastMonthPosts = posts.filter(post => {
-                    const postDate = new Date(Date.parse(post.createdAt));
+                    const postDate = new Date(post.createdAt);
                     return postDate.getFullYear() === prevPostDate.getFullYear()
                         && postDate.getMonth() === prevPostDate.getMonth()
                 });
@@ -161,8 +161,8 @@ class Generator {
                     return [post.createdAt];
                 }
 
-                const postDate = new Date(Date.parse(post.createdAt));
-                const lastDate = new Date(Date.parse(acc[acc.length - 1]));
+                const postDate = new Date(post.createdAt);
+                const lastDate = new Date(acc[acc.length - 1]);
 
                 if (postDate.getFullYear() === lastDate.getFullYear() && postDate.getMonth() === lastDate.getMonth()) {
                     return acc;
@@ -333,8 +333,8 @@ class Generator {
 
     async writeAPOutbox(posts, siteUrl, file) {
         const url = `${siteUrl}/ap/outbox`;
-        const first = this.filenameFromIsoTimestamp(new Date(Date.parse(posts[0].createdAt)));
-        const last = this.filenameFromIsoTimestamp(new Date(Date.parse(posts[posts.length - 1].createdAt)));
+        const first = this.filenameFromIsoTimestamp(new Date(posts[0].createdAt));
+        const last = this.filenameFromIsoTimestamp(new Date(posts[posts.length - 1].createdAt));
 
         const outbox = {
             "@context": "https://www.w3.org/ns/activitystreams",
@@ -447,12 +447,12 @@ class Generator {
     }
 
     filenameFromIsoTimestamp(timestamp) {
-        const date = new Date(Date.parse(timestamp));
+        const date = new Date(timestamp);
         return `${date.getFullYear()}-${date.getMonth() + 1}`;
     }
 
     displayMonthFromIsoTimestamp(timestamp) {
-        const date = new Date(Date.parse(timestamp));
+        const date = new Date(timestamp);
         return date.toLocaleDateString(undefined, {year: 'numeric', month: 'long'});
     }
 }

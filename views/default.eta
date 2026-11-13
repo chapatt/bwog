@@ -99,8 +99,8 @@
         window.addEventListener('load', () => {
             document.querySelectorAll('ol.posts > li > time').forEach(element => {
                 const datetime = element.getAttribute('datetime');
-                const date = (new Date(Date.parse(datetime))).toLocaleDateString();
-                const time = (new Date(Date.parse(datetime))).toLocaleTimeString([], {timeStyle: 'short'});
+                const date = (new Date(datetime)).toLocaleDateString();
+                const time = (new Date(datetime)).toLocaleTimeString([], {timeStyle: 'short'});
                 element.innerHTML = `${date} (${time})`;
             });
 
@@ -138,8 +138,8 @@
         <% it.posts.forEach(function(post) { %>
             <li id="<%= post.id %>">
                 <time class="timestamp" datetime="<%= post.createdAt %>">
-                    <%= (new Date(Date.parse(post.createdAt))).toLocaleDateString() %>
-                    (<%= (new Date(Date.parse(post.createdAt))).toLocaleTimeString([], {timeStyle: 'short'}) %>)
+                    <%= (new Date(post.createdAt)).toLocaleDateString() %>
+                    (<%= (new Date(post.createdAt)).toLocaleTimeString([], {timeStyle: 'short'}) %>)
                 </time>
                 <p class="text"><%~ post.text.replace(/(https:\/\/\S*)/g, '<a href="$1">$1</a>').replaceAll('\n', '<br />') %></p>
                 <% if (post.type === 'song') { %>
