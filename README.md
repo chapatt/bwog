@@ -101,7 +101,7 @@ npm install
 The nodejs app can be run however you prefer to run daemons on your system. A systemd unit file is included at `bwog.service`.
 
 ## Configuration
-The included `.env.example` can be copied to `.env` and the values replaced.
+The included `env.example` can be copied to `.env` and the values replaced.
 
 The javascript oauth library Passport is used to authenticate via Google account. You must set up an oauth2 client on the Google Developer Console in the Google Auth Platform and copy the credentials here:
 ```
