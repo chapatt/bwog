@@ -16,7 +16,7 @@ program
     .requiredOption('-o, --output <string>', 'output directory')
     .requiredOption('-n, --name <string>', 'author display name')
     .requiredOption('-e, --email <string>', 'author email address')
-    .option('-l, --enable_ap <boolean>', 'If ActivityPub files should be generated', false)
+    .option('-l, --enable_ap', 'If ActivityPub files should be generated', false)
     .option('-a, --ap_handle <string>', 'ActivityPub handle, e.g. author@example.com')
     .option('-m, --ap_username <string>', 'ActivityPub username, e.g. author')
     .option('-k, --ap_public_key <string>', 'ActivityPub public key path, e.g. ./public.pem')
