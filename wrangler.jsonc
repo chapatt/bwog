@@ -3,7 +3,6 @@
   "main": "./cloudflare/worker.js",
   "upload_source_maps": true,
   "compatibility_date": "2026-11-11",
-  "keep_vars": true,
   "workers_dev": false,
   "preview_urls": false,
   "durable_objects": {
@@ -29,5 +28,42 @@
       "type": "durable-object",
       "storage": "sqlite"
     }
-  }
+  },
+  "keep_vars": true,
+  "vars": {
+    "SITE_DOMAIN": "example.com",
+    "GOOGLE_OAUTH_AUTHORIZED_USER_ID": "1234567890",
+    "GOOGLE_OAUTH_CLIENT_ID": "1234567890.apps.googleusercontent.com",
+    "AUTHOR_NAME": "John Smith",
+    "AUTHOR_EMAIL": "jsmith@example.com",
+    "ENABLE_AP": "false",
+    "AP_HANDLE": "jsmith@example.com",
+    "AP_USERNAME": "jsmith",
+    "AP_PUBLIC_KEY_STRING": "-----BEGIN PUBLIC KEY-----\n1234567890\n-----END PUBLIC KEY-----"
+  },
+  "secrets": {
+    "required": ["JWT_SECRET", "GOOGLE_OAUTH_CLIENT_SECRET"]
+  },
+  "routes": [
+    {
+      "pattern": "example.org/setup*",
+      "zone_name": "example.org"
+    },
+    {
+      "pattern": "example.org/generate*",
+      "zone_name": "example.org"
+    },
+    {
+      "pattern": "example.org/post*",
+      "zone_name": "example.org"
+    },
+    {
+      "pattern": "example.org/login*",
+      "zone_name": "example.org"
+    },
+    {
+      "pattern": "example.org/logout*",
+      "zone_name": "example.org"
+    }
+  ]
 }
