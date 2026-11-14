@@ -1,6 +1,6 @@
 {
-  "name": "bwog",
-  "main": "./cloudflare/worker.js",
+  "name": "bwog-app",
+  "main": "./node_modules/bwog/cloudflare/worker.js",
   "upload_source_maps": true,
   "compatibility_date": "2026-11-11",
   "workers_dev": false,
@@ -43,6 +43,9 @@
   },
   "secrets": {
     "required": ["JWT_SECRET", "GOOGLE_OAUTH_CLIENT_SECRET"]
+  },
+  "alias": {
+    "bwog.config": "./bwog.config.js"
   },
   "routes": [
     {
