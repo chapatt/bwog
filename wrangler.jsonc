@@ -32,13 +32,13 @@
   "keep_vars": true,
   "vars": {
     "SITE_DOMAIN": "example.com",
-    "GOOGLE_OAUTH_AUTHORIZED_USER_ID": "1234567890",
-    "GOOGLE_OAUTH_CLIENT_ID": "1234567890.apps.googleusercontent.com",
-    "AUTHOR_NAME": "John Smith",
-    "AUTHOR_EMAIL": "jsmith@example.com",
+    "GOOGLE_OAUTH_AUTHORIZED_USER_ID": "12345ABCDE",
+    "GOOGLE_OAUTH_CLIENT_ID": "12345ABCDE.apps.googleusercontent.com",
+    "AUTHOR_NAME": "Alice Smith",
+    "AUTHOR_EMAIL": "author@example.com",
     "ENABLE_AP": "false",
-    "AP_HANDLE": "jsmith@example.com",
-    "AP_USERNAME": "jsmith",
+    "AP_HANDLE": "author@example.com",
+    "AP_USERNAME": "author",
     "AP_PUBLIC_KEY_STRING": "-----BEGIN PUBLIC KEY-----\n1234567890\n-----END PUBLIC KEY-----"
   },
   "secrets": {
