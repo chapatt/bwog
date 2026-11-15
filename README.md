@@ -1,6 +1,33 @@
 <p align="center"><img src="images/logo.png" alt="bwog" style="width: 20em;" /></p>
 <p align="center">bwog is a toy static site generator for a tumblelog/microblog</p>
 
+## Installation
+The easiest way to bootstrap a new project is to clone a template with the command:
+```shell
+npm create @bwog/bwog -- -t vps
+```
+(`-t` can be `vps` for a traditional, persistent web server or `cloudflare-worker` to set the project up to run on a Worker with D0 database and R2 storage)
+
+If you're deploying on Cloudflare, this button starts a wizard to copy the template into a new github repo, set some env variables, and provision the needed resources:
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/chapatt/create-bwog/tree/main/templates/cloudflare-worker)
+
+## Configuration
+
+bwog searches for a config file in a few places, stopping when in finds one:
+ * beginning with the alias 'bwog.config' (e.g. set by esbuild or wrangler)
+ * a path set in the environment variable `BWOG_CONFIG` (absolute or relative to the working directory)
+ * a file called `bwog.config.js` in the working directory
+
+Some values and credentials are set via environment variables, a `.env` file, or when using Cloudflare, via `wrangler.jsonc` or the Cloudflare Workers web UI.
+
+## OAuth
+Create a Google Auth client in the [Cloud Console](https://console.cloud.google.com/auth/clients).
+* make sure to add a URI to the Authorized Origins like `https://example.com`
+* add an Authorized Redirect URI like `https://example.com/login`
+
+Save the Client ID into your environment variables at `GOOGLE_OAUTH_CLIENT_ID`, and a Client secret as a secret named `GOOGLE_OAUTH_CLIENT_SECRET`.
+
 ## Architecture
 The blog generated is by-and-large a static HTML site. The other component is a small nodejs app which facilitates adding posts and regenerating the site.
 
