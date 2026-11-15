@@ -3,6 +3,7 @@ import beautify from 'js-beautify';
 import { minify } from 'html-minifier-next';
 import {createTranslator} from 'short-uuid';
 
+import config from './config';
 import templates from './templates.js';
 
 class Generator {
@@ -222,15 +223,19 @@ class Generator {
     }
 
     async writePage(posts, title, canonical, file, prevPage, nextPage) {
-        const html = beautify.html(
-            templates.default.call(this.eta, {posts, title, canonical, prevPage, nextPage}, {tab_size: 4, ignore: ['style', 'script']}),
-            {
-                end_with_newline: true,
-                space_after_anon_function: true,
-                operator_position: 'after-newline',
-                extra_liners: [],
-            },
-        );
+        let html = templates.default.call(this.eta, {posts, title, canonical, prevPage, nextPage}, {tab_size: 4, ignore: ['style', 'script']});
+
+        if (config.beautifyHtml) {
+            html = beautify.html(
+                html,
+                {
+                    end_with_newline: true,
+                    space_after_anon_function: true,
+                    operator_position: 'after-newline',
+                    extra_liners: [],
+                }
+            );
+        }
 
         try {
             await this.store.write(file, html, 'text/html')
