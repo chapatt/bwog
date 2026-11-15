@@ -78,11 +78,13 @@ app.get('/setup', async c => {
     const database = new DurableObjectDatabase(stub);
     const generator = new Generator(store, database);
 
-    const postsFile = await c.env.PRIVATE_BUCKET.get('posts.json');
-    const posts = await postsFile.json();
-
     await database.initSchema();
-    await database.importPosts(posts);
+
+    if (c.req.query('import') !== undefined) {
+        const postsFile = await c.env.PRIVATE_BUCKET.get('posts.json');
+        const posts = await postsFile.json();
+        await database.importPosts(posts);
+    }
 
     await generator.generate(`https://${process.env['SITE_DOMAIN']}`, process.env['AUTHOR_NAME'], process.env['AUTHOR_EMAIL'], false);
 
