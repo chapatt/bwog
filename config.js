@@ -2,7 +2,7 @@ import { resolve } from 'node:path';
 
 const config = await import('bwog.config')
     .catch(async () => {
-        if (process.env.BWOG_ENV) {
+        if (process.env.BWOG_CONFIG) {
             return await import(resolve(process.cwd(), process.env.BWOG_ENV));
         }
     })
