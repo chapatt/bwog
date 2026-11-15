@@ -54,13 +54,13 @@ app.get('/login', async c => {
     return c.redirect('/');
 });
 
-app.use('/post', (c, next) => jwt({
+app.use((c, next) => jwt({
     secret: c.env.JWT_SECRET,
     alg: 'HS256',
     cookie: 'authToken',
 })(c, next));
 
-app.post(['/post', '/generate'], async c => {
+app.post('/post', async c => {
     const user = c.get('jwtPayload').sub;
     const stub = c.env.DATABASE.getByName('blog-posts');
     const store = new R2Store(c.env.STORE);
