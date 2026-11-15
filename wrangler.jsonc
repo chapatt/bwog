@@ -1,6 +1,6 @@
 {
   "name": "bwog-app",
-  "main": "./node_modules/bwog/cloudflare/worker.js",
+  "main": "./node_modules/@bwog/bwog/cloudflare/worker.js",
   "upload_source_maps": true,
   "compatibility_date": "2026-11-11",
   "workers_dev": false,
