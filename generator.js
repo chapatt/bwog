@@ -38,48 +38,53 @@ class Generator {
 
         try {
             await this.generateIndex(siteUrl, posts, sitemap);
-            await this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom');
+
+            if (posts.length > 0) {
+                await this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom');
+            }
         } catch (error) {
             console.error(error);
             return;
         }
 
-        let previousMonth = postsByMonth[0][0].createdAt;
-        let currentMonth = null;
-        let nextMonth = null;
-        for (let i = 0; i < postsByMonth.length; ++i) {
-            nextMonth = currentMonth;
-            currentMonth = previousMonth;
+        if (posts.length > 0) {
+            let previousMonth = postsByMonth[0][0].createdAt;
+            let currentMonth = null;
+            let nextMonth = null;
+            for (let i = 0; i < postsByMonth.length; ++i) {
+                nextMonth = currentMonth;
+                currentMonth = previousMonth;
 
-            if (postsByMonth.length > i + 1) {
-                previousMonth = postsByMonth[i + 1][0].createdAt;
-            } else {
-                previousMonth = null;
-            }
-
-            try {
-                await this.writePage(postsByMonth[i],
-                    this.displayMonthFromIsoTimestamp(currentMonth),
-                    `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
-                    this.filenameFromIsoTimestamp(currentMonth),
-                    previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth),
-                    nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth));
-
-                sitemap.push({
-                    url: `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
-                    updatedAt: currentMonth,
-                });
-
-                if (enableAP) {
-                    await this.writeAPOutboxPage(postsByMonth[i],
-                        siteUrl,
-                        this.filenameFromIsoTimestamp(currentMonth),
-                        nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth),
-                        previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth));
+                if (postsByMonth.length > i + 1) {
+                    previousMonth = postsByMonth[i + 1][0].createdAt;
+                } else {
+                    previousMonth = null;
                 }
-            } catch (error) {
-                console.error(error);
-                return;
+
+                try {
+                    await this.writePage(postsByMonth[i],
+                        this.displayMonthFromIsoTimestamp(currentMonth),
+                        `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
+                        this.filenameFromIsoTimestamp(currentMonth),
+                        previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth),
+                        nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth));
+
+                    sitemap.push({
+                        url: `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
+                        updatedAt: currentMonth,
+                    });
+
+                    if (enableAP) {
+                        await this.writeAPOutboxPage(postsByMonth[i],
+                            siteUrl,
+                            this.filenameFromIsoTimestamp(currentMonth),
+                            nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth),
+                            previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth));
+                    }
+                } catch (error) {
+                    console.error(error);
+                    return;
+                }
             }
         }
 
@@ -192,11 +197,11 @@ class Generator {
                 null,
                 `${siteUrl}/`,
                 'index',
-                this.filenameFromIsoTimestamp(posts[10].createdAt),
+                posts[10] ? this.filenameFromIsoTimestamp(posts[10].createdAt) : null,
                 null);
             sitemap.push({
                 url: `${siteUrl}/`,
-                updatedAt: mainPage[0].createdAt,
+                updatedAt: mainPage[0] ? mainPage[0].createdAt : (new Date()).toISOString().split('.')[0] + 'Z',
             });
         } catch (error) {
             throw(error);
@@ -333,15 +338,19 @@ class Generator {
 
     async writeAPOutbox(posts, siteUrl, file) {
         const url = `${siteUrl}/ap/outbox`;
-        const first = this.filenameFromIsoTimestamp(new Date(posts[0].createdAt));
-        const last = this.filenameFromIsoTimestamp(new Date(posts[posts.length - 1].createdAt));
 
         const outbox = {
             "@context": "https://www.w3.org/ns/activitystreams",
             "type": "OrderedCollection",
-            "totalItems": posts.length,
-            "first": `${url}?page=${first}`,
-            "last": `${url}?page=${last}`
+            "totalItems": posts.length
+        }
+
+        if (posts.length > 0) {
+            const first = this.filenameFromIsoTimestamp(new Date(posts[0].createdAt));
+            const last = this.filenameFromIsoTimestamp(new Date(posts[posts.length - 1].createdAt));
+
+            outbox["first"] = `${url}?page=${first}`;
+            outbox["last"] = `${url}?page=${last}`;
         }
 
         const json = beautify.js(
