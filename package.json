@@ -1,6 +1,6 @@
 {
   "name": "@bwog/bwog",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "bwog is a toy static site generator for a tumblelog/microblog",
   "keywords": [
     "blog",
