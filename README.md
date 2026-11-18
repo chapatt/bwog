@@ -15,7 +15,7 @@ If you're deploying on Cloudflare, this button starts a wizard to copy the templ
 ## Configuration
 
 bwog searches for a config file in a few places, stopping when in finds one:
- * beginning with the alias 'bwog.config' (e.g. set by esbuild or wrangler)
+ * beginning with the alias '@bwog.config' (e.g. set by esbuild or wrangler)
  * a path set in the environment variable `BWOG_CONFIG` (absolute or relative to the working directory)
  * a file called `bwog.config.js` in the working directory
 

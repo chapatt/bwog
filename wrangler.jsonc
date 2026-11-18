@@ -45,7 +45,7 @@
     "required": ["JWT_SECRET", "GOOGLE_OAUTH_CLIENT_SECRET"]
   },
   "alias": {
-    "bwog.config": "./bwog.config.js"
+    "@bwog.config": "./bwog.config.js"
   },
   "routes": [
     {
