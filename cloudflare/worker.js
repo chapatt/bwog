@@ -4,6 +4,7 @@ import { csrf } from 'hono/csrf';
 import { setCookie, deleteCookie } from 'hono/cookie';
 import { googleAuth } from '@hono/oauth-providers/google';
 
+import { handler } from '../transformers.js';
 import R2Store from '../stores/R2Store.js';
 import DurableObjectDatabase from '../databases/DurableObjectDatabase.js';
 import Controller from '../controller.js';
@@ -61,13 +62,25 @@ app.use((c, next) => jwt({
 })(c, next));
 
 app.post('/post', async c => {
+    let content;
+    if (!c.req.query('type')) {
+        c.status(400);
+        return c.text("Bad Request: 'type' parameter required.");
+    }
+    try {
+        content = handler(c.req.query('type'), await c.req.parseBody());
+    } catch (error) {
+        c.status(400);
+        return c.text(error.message);
+    }
+
     const user = c.get('jwtPayload').sub;
     const stub = c.env.DATABASE.getByName('blog-posts');
     const store = new R2Store(c.env.STORE);
     const database = new DurableObjectDatabase(stub);
     const controller = new Controller(store, database);
 
-    await controller.createPost(await c.req.parseBody(), user);
+    await controller.createPost(content, user);
 
     return c.redirect('/');
 });

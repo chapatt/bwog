@@ -8,40 +8,13 @@ class Controller {
         this.database = database;
     }
 
-    async createPost(formData, user) {
-        if (!formData.text && !formData.tracks) {
-            return null;
-        }
-        let post = {
+    async createPost(data, user) {
+        const post = {
+            ...data,
             id: generate(),
             author: user.name,
             createdAt: (new Date()).toISOString().split('.')[0] + 'Z',
-            text: formData.text.replaceAll('\r\n', '\n'),
         };
-        const trackStrings = formData.tracks.replaceAll('\r\n', '\n').split('\n');
-        const trackStringsFiltered = trackStrings.filter(track => track !== '');
-        const tracks = trackStringsFiltered.map(track => {
-            const tuple = track.split(' - ');
-            return {
-                artist: tuple[0],
-                title: tuple[1],
-            };
-        });
-        post.type = tracks.length > 0
-            ? (tracks.length > 1 ? 'playlist' : 'song')
-            : 'text';
-
-        switch (post.type) {
-            case 'playlist':
-                post.tracks = tracks;
-                break;
-            case 'song':
-                post = {...post, ...tracks[0]};
-                break;
-            case 'text':
-            default:
-                break;
-        }
 
         this.database.createPost(post);
 

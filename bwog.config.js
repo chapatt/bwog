@@ -1,6 +1,7 @@
-import resolve from 'node:path';
+import transformers from './transformers/index.js';
 
 export default {
     beautifyHtml: true,
-    templates: resolve('./templates'),
-}
+    views: './views',
+    transformers,
+};

@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { handler } from '../transformers.js';
 import Controller from '../controller.js';
 import NodeFsStore from '../stores/NodeFsStore.js';
 import JsonDatabase from '../databases/JsonDatabase.js';
@@ -12,6 +13,16 @@ router.post('/post', async (req, res) => {
         req.session.pendingPost = req.body;
         res.redirect('/login');
         return;
+    }
+
+    let content;
+    if (!req.query.type) {
+        res.status(400).send("Bad Request: 'type' parameter required.");
+    }
+    try {
+        content = handler(req.query.type, req.body);
+    } catch (error) {
+        res.status(400).send(error.message);
     }
 
     const store = new NodeFsStore(process.env['PUBLIC_PATH']);
@@ -27,7 +38,7 @@ router.post('/post', async (req, res) => {
     await database.connect();
 
     const controller = new Controller(store, database);
-    await controller.createPost(req.body, req.user);
+    await controller.createPost(content, req.user);
     res.redirect('/');
 });
 

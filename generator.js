@@ -3,7 +3,7 @@ import beautify from 'js-beautify';
 import { minify } from 'html-minifier-next';
 import {createTranslator} from 'short-uuid';
 
-import config from './config';
+import config from './config.js';
 import templates from './templates.js';
 
 class Generator {
