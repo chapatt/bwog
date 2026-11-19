@@ -2,15 +2,10 @@ import { resolve } from 'node:path';
 
 const config = await import('@bwog.config')
     .catch(async () => {
-        if (process.env.BWOG_CONFIG) {
-            return await import(resolve(process.cwd(), process.env.BWOG_ENV));
-        }
-    })
-    .catch(async () => {
-        return await import(resolve(process.cwd(), './bwog.config.js'));
+        return await import(resolve(process.cwd(), process.env.BWOG_CONFIG || './bwog.config.js'));
     })
     .catch(() => {
-        throw new Error('Could not locate bwog config file at esbuild alias, BWOG_ENV, or working directory');
+        throw new Error('Could not locate bwog config file at esbuild alias, BWOG_ENV, or ./bwog.config.js');
     })
 
-export default config;
+export const transformers = resolve(process.cwd(), config.transformers);
