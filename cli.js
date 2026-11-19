@@ -19,6 +19,7 @@ program.command('build')
                 alias: {
                     '@bwog.config': './bwog.config.js',
                 },
+                nodePaths: [resolve(import.meta.dirname, './node_modules')],
                 bundle: true,
                 format: 'esm',
                 platform: 'browser',
@@ -38,6 +39,7 @@ program.command('build')
                 alias: {
                     '@bwog.config': './bwog.config.js',
                 },
+                nodePaths: [resolve(import.meta.dirname, './node_modules')],
                 bundle: true,
                 format: 'esm',
                 platform: 'node',
