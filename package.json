@@ -45,5 +45,8 @@
   },
   "bin": {
     "bwog": "./cli.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }

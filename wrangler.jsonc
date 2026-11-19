@@ -47,6 +47,11 @@
   "alias": {
     "@bwog.config": "./bwog.config.js"
   },
+  "build": {
+    "command": "npm run build",
+    "cwd": "./",
+    "watch_dir": "./dist"
+  },
   "routes": [
     {
       "pattern": "example.org/setup*",
