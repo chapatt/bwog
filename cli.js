@@ -16,6 +16,9 @@ program.command('build')
             await esbuild.build({
                 entryPoints: [resolve(import.meta.dirname, './cloudflare/worker.js')],
                 outfile: './dist/worker.js',
+                alias: {
+                    '@bwog.config': './bwog.config.js',
+                },
                 bundle: true,
                 format: 'esm',
                 platform: 'browser',
@@ -32,6 +35,9 @@ program.command('build')
             await esbuild.build({
                 entryPoints: [resolve(import.meta.dirname, './app.js')],
                 outfile: './dist/app.js',
+                alias: {
+                    '@bwog.config': './bwog.config.js',
+                },
                 bundle: true,
                 format: 'esm',
                 platform: 'node',
