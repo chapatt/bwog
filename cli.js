@@ -13,8 +13,8 @@ program.command('build')
     });
 
 program.command('run')
-    .description('start web server listening for requests')
-    .option('-p, --port <number>', 'ActivityPub public key path, e.g. ./public.pem', '3000')
+    .description('start web server')
+    .option('-p, --port <number>', 'port on which to listen for requests', '3000')
     .action(({port}) => {
         app.listen(port);
         console.log('listening');
