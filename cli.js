@@ -9,9 +9,10 @@ program
 
 program.command('build')
     .description('build required files for deployment')
-    .addOption(new Option('-t, --template <string>', 'type of deployment: cloudflare workers or a traditional web server.').choices(['cloudflare-worker', 'vps']).makeOptionMandatory())
+    .addOption(new Option('-t, --type <string>', 'type of deployment: cloudflare workers or a traditional web server.').choices(['cloudflare-worker', 'vps']).makeOptionMandatory())
     .action(async (options) => {
         if (options.type === 'cloudflare-worker') {
+            console.log('Building for Cloudflare Worker');
             await esbuild.build({
                 entryPoints: [resolve(import.meta.dirname, './cloudflare/worker.js')],
                 outfile: './dist/worker.js',
@@ -27,6 +28,7 @@ program.command('build')
                 plugins: [],
             });
         } else {
+            console.log('Building for VPS');
             await esbuild.build({
                 entryPoints: [resolve(import.meta.dirname, './app.js')],
                 outfile: './dist/app.js',
