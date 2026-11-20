@@ -5,6 +5,7 @@ import {createTranslator} from 'short-uuid';
 
 import config from './config.js';
 import templates from './templates.js';
+import { renderLayout } from './views.js';
 
 class Generator {
     constructor(store, database) {
@@ -223,7 +224,7 @@ class Generator {
     }
 
     async writePage(posts, title, canonical, file, prevPage, nextPage) {
-        let html = templates.default.call(this.eta, {posts, title, canonical, prevPage, nextPage}, {tab_size: 4, ignore: ['style', 'script']});
+        let html = renderLayout({posts, title, canonical, prevPage, nextPage}, {tab_size: 4, ignore: ['style', 'script']});
 
         if (config.beautifyHtml) {
             html = beautify.html(

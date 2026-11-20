@@ -47,8 +47,7 @@
   "no_bundle": true,
   "build": {
     "command": "npm run build",
-    "cwd": "./",
-    "watch_dir": "./dist"
+    "cwd": "./"
   },
   "routes": [
     {

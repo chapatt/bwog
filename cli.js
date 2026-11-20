@@ -4,6 +4,8 @@ import { resolve } from 'node:path';
 import * as esbuild from 'esbuild';
 import { program, Option } from 'commander';
 
+import {etaLoader} from "./templateLoaders/etaLoader.js";
+
 program
     .description('bwog command line utility');
 
@@ -29,7 +31,7 @@ program.command('build')
                 minify: process.env.NODE_ENV === 'production',
                 sourcemap: true,
                 loader: {},
-                plugins: [],
+                plugins: [etaLoader],
             });
         } else {
             console.log('Building for VPS');
