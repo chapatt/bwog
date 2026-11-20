@@ -1,21 +1,18 @@
 #!/usr/bin/env node
 
 import { resolve } from 'node:path';
-import { pathToFileURL} from 'url';
 import * as esbuild from 'esbuild';
 import { program, Option } from 'commander';
 
-const { default: config } = await import(pathToFileURL(resolve(process.cwd(), './bwog.config.js')));
 import { etaLoader } from './templateLoaders/etaLoader.js';
 
 program.description('bwog command line utility');
 
 program.command('build')
     .description('build required files for deployment')
-    .addOption(new Option('-t, --type <string>', 'type of deployment: cloudflare workers or a traditional web server.').choices(['cloudflare-worker', 'vps']).makeOptionMandatory(!config.deploymentType))
+    .addOption(new Option('-t, --type <string>', 'type of deployment: cloudflare workers or a traditional web server.').choices(['cloudflare-worker', 'vps']).makeOptionMandatory())
     .action(async (options) => {
-        const type = config.deploymentType ?? options.type;
-        switch (type) {
+        switch (options.type) {
         case 'cloudflare-worker':
             console.log('Building for Cloudflare Worker');
             await esbuild.build({
