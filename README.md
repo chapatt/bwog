@@ -18,6 +18,17 @@ bwog searches for a config file at the alias '@bwog.config' (e.g. set by esbuild
 
 Some values and credentials are set via environment variables, a `.env` file, or when using Cloudflare, via `wrangler.jsonc` or the Cloudflare Workers web UI.
 
+## Building
+Make sure to install or update dependencies:
+```shell
+npm i
+```
+
+Bundle project into the configured location:
+```shell
+npm run build # If you used our template, this runs 'npx bwog build'
+```
+
 ## OAuth
 Create a Google Auth client in the [Cloud Console](https://console.cloud.google.com/auth/clients).
 * make sure to add a URI to the Authorized Origins like `https://example.com`

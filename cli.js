@@ -4,16 +4,18 @@ import { resolve } from 'node:path';
 import * as esbuild from 'esbuild';
 import { program, Option } from 'commander';
 
-import {etaLoader} from "./templateLoaders/etaLoader.js";
+const { default: config } = await import(resolve(process.cwd(), './bwog.config.js'));
+import { etaLoader } from './templateLoaders/etaLoader.js';
 
-program
-    .description('bwog command line utility');
+program.description('bwog command line utility');
 
 program.command('build')
     .description('build required files for deployment')
-    .addOption(new Option('-t, --type <string>', 'type of deployment: cloudflare workers or a traditional web server.').choices(['cloudflare-worker', 'vps']).makeOptionMandatory())
+    .addOption(new Option('-t, --type <string>', 'type of deployment: cloudflare workers or a traditional web server.').choices(['cloudflare-worker', 'vps']).makeOptionMandatory(!config.deploymentType))
     .action(async (options) => {
-        if (options.type === 'cloudflare-worker') {
+        const type = config.deploymentType ?? options.type;
+        switch (type) {
+        case 'cloudflare-worker':
             console.log('Building for Cloudflare Worker');
             await esbuild.build({
                 entryPoints: [resolve(import.meta.dirname, './cloudflare/worker.js')],
@@ -33,7 +35,7 @@ program.command('build')
                 loader: {},
                 plugins: [etaLoader],
             });
-        } else {
+        case 'vps':
             console.log('Building for VPS');
             await esbuild.build({
                 entryPoints: [resolve(import.meta.dirname, './app.js')],

@@ -3,6 +3,7 @@ import views from './views/index.js';
 
 export default {
     beautifyHtml: true,
+    deploymentType: 'cloudflare-worker',
     views,
     transformers,
 };
