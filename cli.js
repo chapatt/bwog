@@ -57,6 +57,9 @@ program.command('build')
                 sourcemap: true,
                 loader: {},
                 plugins: [],
+                logOverride: {
+                    'empty-glob': 'silent',
+                },
             });
             break;
         }
