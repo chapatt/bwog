@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
 import { resolve } from 'node:path';
+import { pathToFileURL} from 'url';
 import * as esbuild from 'esbuild';
 import { program, Option } from 'commander';
 
-const { default: config } = await import(resolve(process.cwd(), './bwog.config.js'));
+const { default: config } = await import(pathToFileURL(resolve(process.cwd(), './bwog.config.js')));
 import { etaLoader } from './templateLoaders/etaLoader.js';
 
 program.description('bwog command line utility');
@@ -34,7 +35,11 @@ program.command('build')
                 sourcemap: true,
                 loader: {},
                 plugins: [etaLoader],
+                logOverride: {
+                    'empty-glob': 'silent',
+                },
             });
+            break;
         case 'vps':
             console.log('Building for VPS');
             await esbuild.build({
@@ -53,6 +58,7 @@ program.command('build')
                 loader: {},
                 plugins: [],
             });
+            break;
         }
     });
 
