@@ -80,7 +80,12 @@ app.post('/post', async c => {
     const database = new DurableObjectDatabase(stub);
     const controller = new Controller(store, database);
 
-    await controller.createPost(content, user);
+    try {
+        await controller.createPost(content, user);
+    } catch(error) {
+        c.status(400);
+        return c.text("Bad Request: post could not be processed.");
+    }
 
     return c.redirect('/');
 });
