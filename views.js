@@ -7,7 +7,7 @@ const eta = new Eta();
 export function renderPost(type, medium, data) {
     const view = config.views[type][medium];
 
-    view.template.default.call(eta, {post: view.handler(data)});
+    return view.template.call(eta, {post: view.handler(data)});
 }
 
 export function renderLayout(data) {
@@ -15,5 +15,5 @@ export function renderLayout(data) {
 
     eta.loadTemplate("@post", (it, options) => renderPost(it.post.type, 'web', it.post));
 
-    return view.template.default.call(eta, view.handler(data));
+    return view.template.call(eta, view.handler(data));
 }
