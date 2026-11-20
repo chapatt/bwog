@@ -10,9 +10,9 @@ program.description('bwog command line utility');
 
 program.command('build')
     .description('build required files for deployment')
-    .addOption(new Option('-t, --type <string>', 'type of deployment: cloudflare workers or a traditional web server.').choices(['cloudflare-worker', 'vps']).makeOptionMandatory())
+    .addOption(new Option('-t, --deployment_type <string>', 'type of deployment: cloudflare workers or a traditional web server.').choices(['cloudflare-worker', 'vps']).makeOptionMandatory())
     .action(async (options) => {
-        switch (options.type) {
+        switch (options.deployment_type) {
         case 'cloudflare-worker':
             console.log('Building for Cloudflare Worker');
             await esbuild.build({
