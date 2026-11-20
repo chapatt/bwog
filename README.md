@@ -24,9 +24,9 @@ Make sure to install or update dependencies:
 npm i
 ```
 
-Bundle project into the configured location:
+Bundle project into `./dist`:
 ```shell
-npm run build # If you used our template, this runs 'npx bwog build'
+npm run build # If you used our template, this runs 'npx bwog build -t <deploymentType>'
 ```
 
 ## OAuth
