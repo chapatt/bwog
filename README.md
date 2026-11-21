@@ -4,7 +4,7 @@
 ## Installation
 The easiest way to bootstrap a new project is to clone a template with the command:
 ```shell
-npm create @bwog/bwog -- -t vps
+npm create bwog@latest -- -t vps
 ```
 (`-t` can be `vps` for a traditional, persistent web server or `cloudflare-worker` to set the project up to run on a Worker with D0 database and R2 storage)
 
