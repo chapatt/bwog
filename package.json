@@ -34,7 +34,7 @@
     "express-session": "^1.18.1",
     "hono": "^4.13.18",
     "html-minifier-next": "^9.1.2",
-    "js-beautify": "^2.0.3",
+    "js-beautify": "^1.14.8",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "short-uuid": "^6.0.3",
