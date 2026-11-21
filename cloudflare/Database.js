@@ -29,6 +29,7 @@ class Database extends DurableObject {
                 post.id,
                 post.author,
                 post.createdAt,
+                post.type,
                 JSON.stringify(content)
             );
         });
@@ -98,11 +99,13 @@ class Database extends DurableObject {
         delete content.id;
         delete content.author;
         delete content.createdAt;
+        delete content.type
         this.db.exec(
             'INSERT INTO posts (id, author, created_at, type, content) VALUES (?, ?, ?, ?, jsonb(?));',
             post.id,
             post.author,
             post.createdAt,
+            post.type,
             JSON.stringify(content)
         );
     }
