@@ -148,7 +148,7 @@
                     <p class="album"><span class="artist"><%= post.artist%></span> - <span class="title"><%= post.title %></span></p>
                 <% } else if (post.type === 'playlist') { %>
                     <ol class="playlist">
-                        <% post.tracks.forEach(function(song) { %>
+                        <% post.tracks.forEach(song => { %>
                             <li class="song"><span class="artist"><%= song.artist %></span> - <span class="title"><%= song.title %></span></li>
                         <% }) %>
                     </ol>
