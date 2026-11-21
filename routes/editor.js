@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { handler } from '../transformers.js';
+import { handler } from '../transformers';
 import Controller from '../controller.js';
 import NodeFsStore from '../stores/NodeFsStore.js';
 import JsonDatabase from '../databases/JsonDatabase.js';

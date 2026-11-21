@@ -4,7 +4,7 @@ import { csrf } from 'hono/csrf';
 import { setCookie, deleteCookie } from 'hono/cookie';
 import { googleAuth } from '@hono/oauth-providers/google';
 
-import { handler } from '../transformers.js';
+import { handler } from '../transformers';
 import R2Store from '../stores/R2Store.js';
 import DurableObjectDatabase from '../databases/DurableObjectDatabase.js';
 import Controller from '../controller.js';

@@ -4,8 +4,7 @@ import { minify } from 'html-minifier-next';
 import {createTranslator} from 'short-uuid';
 
 import config from './config.js';
-import templates from './templates.js';
-import { renderLayout } from './views.js';
+import { renderAtom, renderLayout, renderPost, renderSitemap } from './views';
 
 class Generator {
     constructor(store, database) {
@@ -212,7 +211,7 @@ class Generator {
 
     async writeSitemap(sitemap, file) {
         const xml = beautify.html(
-            templates.sitemap.call(this.eta, {pages: sitemap}),
+            renderSitemap({pages: sitemap}),
             {end_with_newline: true},
         );
 
@@ -255,11 +254,11 @@ class Generator {
             title: post.text.replace(/(https:\/\/\S*)/g, '').replaceAll('\n', ' ').replace(/\s\s+/g, ' ').trimEnd() || 'link',
             uuid: translator.toUUID(post.id),
             archivePage: `${siteUrl}/${this.filenameFromIsoTimestamp(post.createdAt)}`,
-            html: await minify(templates.basic_html.call(this.eta, {post})),
+            html: await minify(renderPost(post.type, 'basic', post)),
         })));
 
         const xml = beautify.html(
-            templates.atom_feed.call(this.eta, {
+            renderAtom({
                 siteUrl,
                 authorName,
                 authorEmail,
@@ -392,7 +391,7 @@ class Generator {
         for (const post of posts) {
             const url = `${siteUrl}/ap/notes/${post.id}`;
 
-            const noteHtml = await minify(templates.basic_html.call(this.eta, {post}))
+            const noteHtml = await minify(renderPost(post.type, 'basic', post));
 
             const note = {
                 "id": url,

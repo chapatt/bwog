@@ -40,9 +40,6 @@
     "short-uuid": "^6.0.3",
     "zod": "^4.6.7"
   },
-  "scripts": {
-    "build": "node scripts/compile_templates.js"
-  },
   "bin": {
     "bwog": "./cli.js"
   },
