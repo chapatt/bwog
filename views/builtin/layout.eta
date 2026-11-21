@@ -72,16 +72,6 @@
             line-break: anywhere;
         }
 
-        ol.posts > li .song, ol.posts > li .album {
-            font-style: italic;
-        }
-
-        ol.posts > li > .playlist {
-            list-style-type: none;
-            padding-left: 0;
-            margin: 1em 0;
-        }
-
         .pagination {
             text-align: right;
         }
@@ -129,9 +119,8 @@
             <a href="<%= it.nextPage %>">next→</a>
         <% } %>
     </p>
-    <form id="editor" class="editor" action="./post" method="POST">
+    <form id="editor" class="editor" action="./post?type=text" method="POST">
         <textarea name="text" rows="3"></textarea>
-        <textarea name="tracks" rows="1" placeholder="Artist - Title"></textarea>
         <input type="submit" value="post">
     </form>
     <ol class="posts">
@@ -142,17 +131,6 @@
                     (<%= (new Date(post.createdAt)).toLocaleTimeString([], {timeStyle: 'short'}) %>)
                 </time>
                 <p class="text"><%~ post.text.replace(/(https:\/\/\S*)/g, '<a href="$1">$1</a>').replaceAll('\n', '<br />') %></p>
-                <% if (post.type === 'song') { %>
-                    <p class="song"><span class="artist"><%= post.artist%></span> - <span class="title"><%= post.title %></span></p>
-                <% } else if (post.type === 'album') { %>
-                    <p class="album"><span class="artist"><%= post.artist%></span> - <span class="title"><%= post.title %></span></p>
-                <% } else if (post.type === 'playlist') { %>
-                    <ol class="playlist">
-                        <% post.tracks.forEach(song => { %>
-                            <li class="song"><span class="artist"><%= song.artist %></span> - <span class="title"><%= song.title %></span></li>
-                        <% }) %>
-                    </ol>
-                <% } %>
             </li>
         <% }) %>
     </ol>
