@@ -1,9 +1,8 @@
-import transformers from './transformers/index.js';
-import views from './views/index.js';
+import transformers from './transformers';
+import views from './views';
 
 export default {
     beautifyHtml: true,
-    deploymentType: 'cloudflare-worker',
     views,
     transformers,
 };
