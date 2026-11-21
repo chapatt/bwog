@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import * as esbuild from 'esbuild';
 import { program, Option } from 'commander';
 
-import { etaLoader } from '../templateLoaders/etaLoader.js';
+import { etaLoader } from '../src/templateLoaders/etaLoader.js';
 
 program.description('bwog command line utility');
 
@@ -16,7 +16,7 @@ program.command('build')
         case 'cloudflare-worker':
             console.log('Building for Cloudflare Worker');
             await esbuild.build({
-                entryPoints: [resolve(import.meta.dirname, '../cloudflare/worker.js')],
+                entryPoints: [resolve(import.meta.dirname, '../src/cloudflare/worker.js')],
                 outfile: './dist/worker.js',
                 alias: {
                     '@bwog.config': './bwog.config.js',
@@ -40,7 +40,7 @@ program.command('build')
         case 'vps':
             console.log('Building for VPS');
             await esbuild.build({
-                entryPoints: [resolve(import.meta.dirname, '../app.js')],
+                entryPoints: [resolve(import.meta.dirname, '../src/app.js')],
                 outfile: './dist/app.js',
                 alias: {
                     '@bwog.config': './bwog.config.js',

@@ -1,6 +1,6 @@
 import { Eta } from 'eta';
 
-import builtin from './builtin';
+import builtin from './builtin/index.js';
 import config from '../config.js';
 import atom_feed from './system/atom_feed.eta';
 import sitemap from './system/sitemap.eta';

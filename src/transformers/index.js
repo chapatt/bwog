@@ -1,4 +1,4 @@
-import builtin from './builtin';
+import builtin from './builtin/index.js';
 import config from '../config.js';
 
 export function handler(type, content) {

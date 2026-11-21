@@ -4,7 +4,7 @@ import { minify } from 'html-minifier-next';
 import {createTranslator} from 'short-uuid';
 
 import config from './config.js';
-import { renderAtom, renderLayout, renderPost, renderSitemap } from './views';
+import { renderAtom, renderLayout, renderPost, renderSitemap } from './views/index.js';
 
 class Generator {
     constructor(store, database) {
