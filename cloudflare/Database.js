@@ -12,6 +12,7 @@ class Database extends DurableObject {
             id TEXT PRIMARY KEY,
             author TEXT  NOT NULL,
             created_at TEXT  NOT NULL,
+            type TEXT NOT NULL,
             content JSONB NOT NULL
         );`);
     }
@@ -22,8 +23,9 @@ class Database extends DurableObject {
             delete content.id;
             delete content.author;
             delete content.createdAt;
+            delete content.type;
             this.db.exec(
-                'INSERT INTO posts (id, author, created_at, content) VALUES (?, ?, ?, jsonb(?));',
+                'INSERT INTO posts (id, author, created_at, type, content) VALUES (?, ?, ?, ?, jsonb(?));',
                 post.id,
                 post.author,
                 post.createdAt,
@@ -38,6 +40,7 @@ class Database extends DurableObject {
                 id,
                 author,
                 created_at,
+                type,
                 json(content) as content
             FROM posts
             ORDER BY created_at DESC;
@@ -47,6 +50,7 @@ class Database extends DurableObject {
             id: post.id,
             author: post.author,
             createdAt: post.created_at,
+            type: post.type,
             ...JSON.parse(post.content)
         }));
     }
@@ -72,6 +76,7 @@ class Database extends DurableObject {
                 id,
                 author,
                 created_at,
+                type,
                 json(content) as content
             FROM suitability
             WHERE in_latest_two_months = 1
@@ -83,6 +88,7 @@ class Database extends DurableObject {
             id: post.id,
             author: post.author,
             createdAt: post.created_at,
+            type: post.type,
             ...JSON.parse(post.content)
         }));
     }
@@ -93,7 +99,7 @@ class Database extends DurableObject {
         delete content.author;
         delete content.createdAt;
         this.db.exec(
-            'INSERT INTO posts (id, author, created_at, content) VALUES (?, ?, ?, jsonb(?));',
+            'INSERT INTO posts (id, author, created_at, type, content) VALUES (?, ?, ?, ?, jsonb(?));',
             post.id,
             post.author,
             post.createdAt,

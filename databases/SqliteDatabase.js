@@ -15,18 +15,20 @@ class SqliteDatabase {
                 id TEXT PRIMARY KEY,
                 author TEXT NOT NULL,
                 created_at TEXT NOT NULL,
+                type TEXT NOT NULL,
                 content JSONB NOT NULL
             );
         `);
 
-        const insertPost = this.db.prepare('INSERT INTO posts (id, author, created_at, content) VALUES (?, ?, ?, jsonb(?));');
+        const insertPost = this.db.prepare('INSERT INTO posts (id, author, created_at, type, content) VALUES (?, ?, ?, ?, jsonb(?));');
 
         JsonDatabase.getAll().forEach(post => {
             const content = {...post};
             delete content.id;
             delete content.author;
             delete content.createdAt;
-            insertPost.run(post.id, post.author, post.createdAt, JSON.stringify(content));
+            delete content.type;
+            insertPost.run(post.id, post.author, post.createdAt, post.type, JSON.stringify(content));
         });
     }
 
@@ -36,6 +38,7 @@ class SqliteDatabase {
                 id,
                 author,
                 created_at,
+                type,
                 json(content) as content
             FROM posts
             ORDER BY created_at DESC;
@@ -45,6 +48,7 @@ class SqliteDatabase {
             id: post.id,
             author: post.author,
             createdAt: post.created_at,
+            type: post.type,
             ...JSON.parse(post.content)
         }));
     }
@@ -70,6 +74,7 @@ class SqliteDatabase {
                 id,
                 author,
                 created_at,
+                type,
                 json(content) as content
             FROM suitability
             WHERE in_latest_two_months = 1
@@ -81,18 +86,20 @@ class SqliteDatabase {
             id: post.id,
             author: post.author,
             createdAt: post.created_at,
+            type: post.type,
             ...JSON.parse(post.content)
         }));
     }
 
     async createPost(post) {
-        const insertPost = this.db.prepare('INSERT INTO posts (id, author, created_at, content) VALUES (?, ?, ?, jsonb(?));');
+        const insertPost = this.db.prepare('INSERT INTO posts (id, author, created_at, type, content) VALUES (?, ?, ?, ?, jsonb(?));');
 
         const content = {...post};
         delete content.id;
         delete content.author;
         delete content.createdAt;
-        insertPost.run(post.id, post.author, post.createdAt, JSON.stringify(content));
+        delete content.type;
+        insertPost.run(post.id, post.author, post.createdAt, post.type, JSON.stringify(content));
     }
 }
 
