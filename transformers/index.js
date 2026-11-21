@@ -4,10 +4,6 @@ import config from '../config.js';
 export function handler(type, content) {
     const transformer = config?.transformers?.[type] ?? builtin?.[type];
 
-    if (!transformer) {
-        throw new Error(`Cannot find transformer for type: '${type}''`);
-    }
-
     if (transformer) {
         if (transformer.schema) {
             try {
@@ -25,7 +21,7 @@ export function handler(type, content) {
             }
         }
     } else {
-        throw new Error('Bad Request: Invalid post type.');
+        throw new Error(`Cannot find transformer for type: '${type}''`);
     }
 
     return content;
