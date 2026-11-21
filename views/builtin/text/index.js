@@ -1,3 +1,3 @@
-import * as basic from './basic.js';
+import { default as template } from './basic.eta';
 
-export default {basic};
+export default {basic: {template}};

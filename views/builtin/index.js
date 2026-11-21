@@ -1,4 +1,4 @@
-import * as layout from './layout.js';
+import { default as template } from './layout.eta';
 import text from './text';
 
-export default {layout, text};
+export default {layout: {template}, text};
