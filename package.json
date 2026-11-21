@@ -41,7 +41,7 @@
     "zod": "^4.6.7"
   },
   "bin": {
-    "bwog": "./cli.js"
+    "bwog": "scripts/cli.js"
   },
   "devDependencies": {
     "esbuild": "^0.28.2"
