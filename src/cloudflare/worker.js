@@ -27,6 +27,7 @@ app.get('/login', async c => {
     if (user.id !== c.env.GOOGLE_OAUTH_AUTHORIZED_USER_ID) {
         deleteCookie(c, 'authToken');
         deleteCookie(c, 'isAuthed');
+
         return c.redirect('/');
     }
 
@@ -51,6 +52,13 @@ app.get('/login', async c => {
         sameSite: 'Strict',
         maxAge: expirationSeconds,
     });
+
+    return c.redirect('/');
+});
+
+app.get('/logout', c => {
+    deleteCookie(c, 'authToken');
+    deleteCookie(c, 'isAuthed');
 
     return c.redirect('/');
 });
