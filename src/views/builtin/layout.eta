@@ -63,6 +63,12 @@
             clear: both;
         }
 
+        ol.posts > li > * {
+            margin-top: 1em;
+            margin-bottom: 1em;
+            display: block;
+        }
+
         ol.posts > li .timestamp {
             margin-left: -1em;
             font-size: 0.7em;
@@ -70,6 +76,10 @@
 
         ol.posts > li .text a {
             line-break: anywhere;
+        }
+
+        ol.posts > li > img {
+            max-width: 100%;
         }
 
         .pagination {
