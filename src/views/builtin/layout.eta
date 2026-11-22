@@ -8,7 +8,7 @@
     <% } else { %>
         <meta name="description" content="An archive of posts from <%= `${it.title}` %>.">
     <% } %>
-    <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml;charset=utf-8,<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><rect style='fill: %23ee009a' width='100' height='100' /><path style='fill: white' d='m 46.896145,88.64921 C 40.374404,74.369955 49.107189,69.176421 63.300981,75.966678 a 1.0075789,1.0075789 128.88245 0 0 1.239574,-1.537184 C 52.98292,61.336397 44.490904,53.053429 54.4857,40.9555 62.7098,31.0007 63.8784,28.384 56.693,22.0911 L 44.70917,11.59588 a 0.99988834,0.99988834 139.8069 0 0 -1.50978,1.275551 C 51.301904,26.208399 50.713597,27.307903 44.5515,34.8343 32.9606,48.9916 34.6,51.1771 49.6209,64.3152 32.226741,63.721624 28.851587,76.714805 45.431949,89.900492 a 0.99029164,0.99029164 139.48324 0 0 1.464196,-1.251282 z' /></svg>">
+    <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml;charset=utf-8,<svg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'><rect style='fill: %23ee009a' width='100' height='100' /></svg>">
     <% if (it.canonical !== null) { %>
         <link rel="canonical" href="<%= it.canonical %>">
     <% } %>
