@@ -14,9 +14,9 @@ If you're deploying on Cloudflare, this button starts a wizard to copy the templ
 
 ## Configuration
 
-bwog searches for a config file at the alias '@bwog.config' (e.g. set by esbuild or wrangler).
+bwog searches for a config file called `bwog.config.js` in the working directory
 
-Some values and credentials are set via environment variables, a `.env` file, or when using Cloudflare, via `wrangler.jsonc` or the Cloudflare Workers web UI.
+Some values and credentials are set via environment variables, a `.env` file, or when using Cloudflare, via `wrangler.jsonc` or the Cloudflare dashboard.
 
 ## Building
 Make sure to install or update dependencies:
@@ -26,8 +26,10 @@ npm i
 
 Bundle project into `./dist`:
 ```shell
-npm run build # If you used our template, this runs 'npx bwog build -t <deploymentType>'
+npm run build
 ```
+If you used our template, the `build` script in `package.json` is already set up.
+We recommend setting up a script to run `npx bwog build -t <deploymentType>`.
 
 ## OAuth
 Create a Google Auth client in the [Cloud Console](https://console.cloud.google.com/auth/clients).
