@@ -23,6 +23,17 @@ export function renderPost(type, medium, data) {
 }
 
 export function renderLayout(data) {
+    data.posts = data.posts.map(post => !post.attachments
+        ? post
+        : {
+            ...post,
+            attachments: Object.entries(post.attachments).reduce((attachments, [key, value], i) => {
+                attachments[key] = `/cdn/${value}`;
+                return attachments;
+            }, {})
+        }
+    );
+
     const view = config?.views?.layout ?? builtin.layout;
 
     if (!(typeof view.handler === 'function' || typeof view.template === 'function')) {

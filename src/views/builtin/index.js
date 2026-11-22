@@ -1,4 +1,5 @@
 import { default as template } from './layout.eta';
-import text from './text/index.js';
+import text from './text';
+import image from './image';
 
-export default {layout: {template}, text};
+export default {layout: {template}, text, image};

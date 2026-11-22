@@ -119,6 +119,11 @@
             <a href="<%= it.nextPage %>">next→</a>
         <% } %>
     </p>
+    <form id="editor" class="editor" action="./post?type=image" method="POST" enctype="multipart/form-data">
+        <textarea name="text" rows="3"></textarea>
+        <input type="file" name="image" accept="image/*">
+        <input type="submit" value="post">
+    </form>
     <form id="editor" class="editor" action="./post?type=text" method="POST">
         <textarea name="text" rows="3"></textarea>
         <input type="submit" value="post">
@@ -130,6 +135,9 @@
                     <%= (new Date(post.createdAt)).toLocaleDateString() %>
                     (<%= (new Date(post.createdAt)).toLocaleTimeString([], {timeStyle: 'short'}) %>)
                 </time>
+                <% if (post.type === 'image') { %>
+                    <img src="<%= post.attachments.image %>" />
+                <% } %>
                 <p class="text"><%~ post.text.replace(/(https:\/\/\S*)/g, '<a href="$1">$1</a>').replaceAll('\n', '<br />') %></p>
             </li>
         <% }) %>
