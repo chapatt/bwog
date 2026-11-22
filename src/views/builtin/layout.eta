@@ -131,12 +131,8 @@
             <% } %>
         </p>
     <% } %>
-    <form id="editor" class="editor" action="./post?type=image" method="POST" enctype="multipart/form-data">
+    <form id="editor" class="editor" action="./post?type=textOrImage" method="POST" enctype="multipart/form-data">
         <input type="file" name="image" accept="image/*">
-        <textarea name="text" rows="3"></textarea>
-        <input type="submit" value="post">
-    </form>
-    <form id="editor" class="editor" action="./post?type=text" method="POST">
         <textarea name="text" rows="3"></textarea>
         <input type="submit" value="post">
     </form>
