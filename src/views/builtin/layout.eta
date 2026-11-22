@@ -121,17 +121,19 @@
             <text role="heading" aria-level="1" style="fill: white; font-size: 16px; font-style: oblique" x="5" y="25">Blog</text>
         </svg>
     </a>
-    <p class="pagination top">
-        <% if (it.prevPage !== null) { %>
-            <a href="<%= it.prevPage %>">←prev</a>
-        <% } %>
-        <% if (it.nextPage !== null) { %>
-            <a href="<%= it.nextPage %>">next→</a>
-        <% } %>
-    </p>
+    <% if (it.prevPage !== null || it.nextPage !== null) { %>
+        <p class="pagination top">
+            <% if (it.prevPage !== null) { %>
+                <a href="<%= it.prevPage %>">←prev</a>
+            <% } %>
+            <% if (it.nextPage !== null) { %>
+                <a href="<%= it.nextPage %>">next→</a>
+            <% } %>
+        </p>
+    <% } %>
     <form id="editor" class="editor" action="./post?type=image" method="POST" enctype="multipart/form-data">
-        <textarea name="text" rows="3"></textarea>
         <input type="file" name="image" accept="image/*">
+        <textarea name="text" rows="3"></textarea>
         <input type="submit" value="post">
     </form>
     <form id="editor" class="editor" action="./post?type=text" method="POST">
@@ -152,13 +154,15 @@
             </li>
         <% }) %>
     </ol>
-    <p class="pagination">
-        <% if (it.prevPage !== null) { %>
-            <a href="<%= it.prevPage %>">←prev</a>
-        <% } %>
-        <% if (it.nextPage !== null) { %>
-            <a href="<%= it.nextPage %>">next→</a>
-        <% } %>
-    </p>
+    <% if (it.prevPage !== null || it.nextPage !== null) { %>
+        <p class="pagination">
+            <% if (it.prevPage !== null) { %>
+                <a href="<%= it.prevPage %>">←prev</a>
+            <% } %>
+            <% if (it.nextPage !== null) { %>
+                <a href="<%= it.nextPage %>">next→</a>
+            <% } %>
+        </p>
+    <% } %>
 </body>
 </html>
