@@ -5,11 +5,11 @@ import DurableObjectDatabase from '../databases/DurableObjectDatabase.js';
 import router from '../router';
 
 const app = new Hono();
-const store = new R2Store(c.env.STORE);
-const stub = c.env.DATABASE.getByName('blog-posts');
-const database = new DurableObjectDatabase(stub);
 
 app.use((c, next) => {
+    const store = new R2Store(c.env.STORE);
+    const stub = c.env.DATABASE.getByName('blog-posts');
+    const database = new DurableObjectDatabase(stub);
     c.set('store', store);
     c.set('database', database);
 
