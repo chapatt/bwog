@@ -3,7 +3,7 @@ import path from 'path';
 import { program, Option } from 'commander';
 import { pathToFileURL } from 'url';
 
-import Generator from '../src/generator.js';
+import Generator from '../src/Generator.js';
 import NodeFsStore from '../src/stores/NodeFsStore.js';
 import JsonDatabase from '../src/databases/JsonDatabase.js';
 import SqliteDatabase from '../src/databases/SqliteDatabase.js';

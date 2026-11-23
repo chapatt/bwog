@@ -1,7 +1,7 @@
 import {generate} from 'short-uuid';
 import { getExtension } from 'hono/utils/mime'
 
-import Generator from './generator.js';
+import Generator from './Generator.js';
 
 class Controller {
     constructor(store, database) {

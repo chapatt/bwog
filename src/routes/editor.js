@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { handler } from '../transformers/index.js';
-import Controller from '../controller.js';
+import Controller from '../Controller.js';
 import NodeFsStore from '../stores/NodeFsStore.js';
 import JsonDatabase from '../databases/JsonDatabase.js';
 import SqliteDatabase from '../databases/SqliteDatabase.js';

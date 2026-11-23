@@ -2,7 +2,7 @@ import express from 'express';
 import passport from 'passport';
 import GoogleStrategy from 'passport-google-oauth20';
 
-import Controller from '../controller.js';
+import Controller from '../Controller.js';
 import NodeFsStore from "../stores/NodeFsStore.js";
 import JsonDatabase from "../databases/JsonDatabase.js";
 import SqliteDatabase from "../databases/SqliteDatabase.js";

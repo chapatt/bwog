@@ -7,8 +7,8 @@ import { googleAuth } from '@hono/oauth-providers/google';
 import { handler } from '../transformers/index.js';
 import R2Store from '../stores/R2Store.js';
 import DurableObjectDatabase from '../databases/DurableObjectDatabase.js';
-import Controller from '../controller.js';
-import Generator from '../generator.js';
+import Controller from '../Controller.js';
+import Generator from '../Generator.js';
 
 const app = new Hono();
 
