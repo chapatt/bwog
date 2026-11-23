@@ -1,20 +1,29 @@
-import express from 'express';
-import session from 'express-session';
-import passport from 'passport';
-import 'dotenv/config';
+import {Hono} from 'hono';
 
-import authRouter from './routes/auth.js';
-import editorRouter from './routes/editor.js';
+import NodeFsStore from './stores/NodeFsStore.js';
+import JsonDatabase from './databases/JsonDatabase.js';
+import SqliteDatabase from './databases/SqliteDatabase.js';
+import router from './router';
 
-const app = express();
-app.use(session({
-    secret: process.env['SESSION_SECRET'],
-    resave: false,
-    saveUninitialized: false,
-}));
-app.use(passport.authenticate('session'));
-app.use(express.urlencoded({type: 'application/x-www-form-urlencoded'}));
-app.use('/', authRouter);
-app.use('/', editorRouter);
+const app = new Hono();
+const store = new NodeFsStore(process.env['PUBLIC_PATH']);
+let database;
+switch (process.env['DATABASE_TYPE']) {
+    case 'JSON':
+        database = new JsonDatabase(process.env['DATABASE_FILE']);
+        break;
+    case 'SQLITE':
+        database = new SqliteDatabase(process.env['DATABASE_FILE']);
+        break;
+}
+
+app.use((c, next) => {
+    c.set('store', store);
+    c.set('database', database);
+
+    return next();
+});
+
+app.route('/', router);
 
 export default app;
