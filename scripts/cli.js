@@ -11,7 +11,11 @@ program.description('bwog command line utility');
 program.command('build')
     .description('build required files for deployment')
     .addOption(new Option('-t, --deployment_type <string>', 'type of deployment: cloudflare workers or a traditional web server.').choices(['cloudflare-worker', 'vps']).makeOptionMandatory())
+    .option('-d, --dev', 'development build')
     .action(async (options) => {
+        if (process.env.WRANGLER_COMMAND === 'dev') {
+            options.dev = true;
+        }
         switch (options.deployment_type) {
         case 'cloudflare-worker':
             console.log('Building for Cloudflare Worker');
@@ -28,7 +32,10 @@ program.command('build')
                 target: 'es2022',
                 conditions: ['workerd', 'worker', 'browser'],
                 external: ['cloudflare:*', 'node:*', 'url', 'fs', 'path', 'os', 'child_process'],
-                minify: process.env.NODE_ENV === 'production',
+                define: {
+                    '__DEV__': options.dev ? 'true' : 'false',
+                },
+                minify: !options.dev,
                 sourcemap: true,
                 loader: {},
                 plugins: [etaLoader],
@@ -50,7 +57,10 @@ program.command('build')
                 format: 'esm',
                 platform: 'node',
                 target: 'node22',
-                minify: process.env.NODE_ENV === 'production',
+                define: {
+                    '__DEV__': options.dev ? 'true' : 'false',
+                },
+                minify: !options.dev,
                 sourcemap: true,
                 loader: {},
                 plugins: [],

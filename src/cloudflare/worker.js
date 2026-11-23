@@ -14,11 +14,21 @@ const app = new Hono();
 
 app.use(csrf());
 
-app.use('/login', (c, next) => googleAuth({
-    client_id: c.env.GOOGLE_OAUTH_CLIENT_ID,
-    client_secret: c.env.GOOGLE_OAUTH_CLIENT_SECRET,
-    scope: ['email', 'profile'],
-})(c, next));
+if (__DEV__) {
+    app.use('/login', (c, next) => {
+        c.set('user-google', {
+            name: c.env.AUTHOR_NAME,
+            id: c.env.GOOGLE_OAUTH_AUTHORIZED_USER_ID,
+        });
+        return next();
+    });
+} else {
+    app.use('/login', (c, next) => googleAuth({
+        client_id: c.env.GOOGLE_OAUTH_CLIENT_ID,
+        client_secret: c.env.GOOGLE_OAUTH_CLIENT_SECRET,
+        scope: ['email', 'profile'],
+    })(c, next));
+}
 
 app.get('/login', async c => {
     const expirationSeconds = 60 * 60 * 24 * 7;
@@ -63,11 +73,18 @@ app.get('/logout', c => {
     return c.redirect('/');
 });
 
-app.use((c, next) => jwt({
-    secret: c.env.JWT_SECRET,
-    alg: 'HS256',
-    cookie: 'authToken',
-})(c, next));
+app.use((c, next) => {
+    if (__DEV__) {
+        c.set('jwtPayload', {sub: {name: c.env.AUTHOR_NAME}});
+        return next();
+    } else {
+        return jwt({
+            secret: c.env.JWT_SECRET,
+            alg: 'HS256',
+            cookie: 'authToken',
+        })(c, next)
+    }
+});
 
 app.post('/post', async c => {
     let content;
@@ -127,6 +144,15 @@ app.get('/generate', async c => {
 
     return c.redirect('/');
 });
+
+if (__DEV__) {
+    app.get('/*', async c => {
+        const path = c.req.path === '/' ? 'index' : c.req.path.slice(1);
+        const object = await c.env.STORE.get(path);
+        c.header('Content-Type', object.httpMetadata.contentType);
+        return c.body(object.body);
+    });
+}
 
 export { default as Database } from './Database.js';
 export default app;
