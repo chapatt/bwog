@@ -38,15 +38,10 @@ class Generator {
             return acc;
         }, []);
 
-        try {
-            writePromises.push(this.generateIndex(siteUrl, posts, sitemap));
+        writePromises.push(this.generateIndex(siteUrl, posts, sitemap));
 
-            if (posts.length > 0) {
-                writePromises.push(this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom'));
-            }
-        } catch (error) {
-            console.error(error);
-            return;
+        if (posts.length > 0) {
+            writePromises.push(this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom'));
         }
 
         if (posts.length > 0) {
@@ -63,29 +58,24 @@ class Generator {
                     previousMonth = null;
                 }
 
-                try {
-                    writePromises.push(this.writePage(postsByMonth[i],
-                        this.displayMonthFromIsoTimestamp(currentMonth),
-                        `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
+                writePromises.push(this.writePage(postsByMonth[i],
+                    this.displayMonthFromIsoTimestamp(currentMonth),
+                    `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
+                    this.filenameFromIsoTimestamp(currentMonth),
+                    previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth),
+                    nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth)));
+
+                sitemap.push({
+                    url: `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
+                    updatedAt: currentMonth,
+                });
+
+                if (enableAP) {
+                    writePromises.push(this.writeAPOutboxPage(postsByMonth[i],
+                        siteUrl,
                         this.filenameFromIsoTimestamp(currentMonth),
-                        previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth),
-                        nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth)));
-
-                    sitemap.push({
-                        url: `${siteUrl}/${this.filenameFromIsoTimestamp(currentMonth)}`,
-                        updatedAt: currentMonth,
-                    });
-
-                    if (enableAP) {
-                        writePromises.push(this.writeAPOutboxPage(postsByMonth[i],
-                            siteUrl,
-                            this.filenameFromIsoTimestamp(currentMonth),
-                            nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth),
-                            previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth)));
-                    }
-                } catch (error) {
-                    console.error(error);
-                    return;
+                        nextMonth === null ? null : this.filenameFromIsoTimestamp(nextMonth),
+                        previousMonth === null ? null : this.filenameFromIsoTimestamp(previousMonth)));
                 }
             }
         }
@@ -106,7 +96,7 @@ class Generator {
         const sitemap = [];
         const writePromises = [];
 
-        this.generateIndex(siteUrl, posts, sitemap);
+        writePromises.push(this.generateIndex(siteUrl, posts, sitemap));
         writePromises.push(this.writeAtom(siteUrl, authorName, authorEmail, posts, 'feed.atom'));
 
         const newPostDate = new Date(newPost.createdAt);
@@ -118,23 +108,19 @@ class Generator {
         });
         const isNewMonth = thisMonthPosts.length === 1;
 
-        try {
-            writePromises.push(this.writePage(thisMonthPosts,
-                this.displayMonthFromIsoTimestamp(newPost.createdAt),
-                `${siteUrl}/${this.filenameFromIsoTimestamp(newPost.createdAt)}`,
-                this.filenameFromIsoTimestamp(newPost.createdAt),
-                posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null,
-                null));
+        writePromises.push(this.writePage(thisMonthPosts,
+            this.displayMonthFromIsoTimestamp(newPost.createdAt),
+            `${siteUrl}/${this.filenameFromIsoTimestamp(newPost.createdAt)}`,
+            this.filenameFromIsoTimestamp(newPost.createdAt),
+            posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null,
+            null));
 
-            if (enableAP) {
-                writePromises.push(this.writeAPOutboxPage(thisMonthPosts,
-                    siteUrl,
-                    this.filenameFromIsoTimestamp(newPost.createdAt),
-                    null,
-                    posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null));
-            }
-        } catch (error) {
-            console.error(error);
+        if (enableAP) {
+            writePromises.push(this.writeAPOutboxPage(thisMonthPosts,
+                siteUrl,
+                this.filenameFromIsoTimestamp(newPost.createdAt),
+                null,
+                posts.length > thisMonthPosts.length ? this.filenameFromIsoTimestamp(posts[thisMonthPosts.length].createdAt) : null));
         }
 
         if (isNewMonth) {
@@ -146,23 +132,19 @@ class Generator {
                         && postDate.getMonth() === prevPostDate.getMonth()
                 });
 
-                try {
-                    writePromises.push(this.writePage(lastMonthPosts,
-                        this.displayMonthFromIsoTimestamp(posts[1].createdAt),
-                        `${siteUrl}/${this.filenameFromIsoTimestamp(posts[1].createdAt)}`,
-                        this.filenameFromIsoTimestamp(posts[1].createdAt),
-                        posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null,
-                        this.filenameFromIsoTimestamp(newPost.createdAt)));
+                writePromises.push(this.writePage(lastMonthPosts,
+                    this.displayMonthFromIsoTimestamp(posts[1].createdAt),
+                    `${siteUrl}/${this.filenameFromIsoTimestamp(posts[1].createdAt)}`,
+                    this.filenameFromIsoTimestamp(posts[1].createdAt),
+                    posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null,
+                    this.filenameFromIsoTimestamp(newPost.createdAt)));
 
-                    if (enableAP) {
-                        writePromises.push(this.writeAPOutboxPage(lastMonthPosts,
-                            siteUrl,
-                            this.filenameFromIsoTimestamp(posts[1].createdAt),
-                            this.filenameFromIsoTimestamp(newPost.createdAt),
-                            posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null));
-                    }
-                } catch (error) {
-                    console.error(error);
+                if (enableAP) {
+                    writePromises.push(this.writeAPOutboxPage(lastMonthPosts,
+                        siteUrl,
+                        this.filenameFromIsoTimestamp(posts[1].createdAt),
+                        this.filenameFromIsoTimestamp(newPost.createdAt),
+                        posts.length > lastMonthPosts.length + 1 ? this.filenameFromIsoTimestamp(posts[lastMonthPosts.length + 1].createdAt) : null));
                 }
             }
 
@@ -199,20 +181,16 @@ class Generator {
     async generateIndex(siteUrl, posts, sitemap) {
         const mainPage = posts.slice(0, 10);
 
-        try {
-            await this.writePage(mainPage,
-                null,
-                `${siteUrl}/`,
-                'index',
-                posts[10] ? this.filenameFromIsoTimestamp(posts[10].createdAt) : null,
-                null);
-            sitemap.push({
-                url: `${siteUrl}/`,
-                updatedAt: mainPage[0] ? mainPage[0].createdAt : (new Date()).toISOString().split('.')[0] + 'Z',
-            });
-        } catch (error) {
-            throw(error);
-        }
+        await this.writePage(mainPage,
+            null,
+            `${siteUrl}/`,
+            'index',
+            posts[10] ? this.filenameFromIsoTimestamp(posts[10].createdAt) : null,
+            null);
+        sitemap.push({
+            url: `${siteUrl}/`,
+            updatedAt: mainPage[0] ? mainPage[0].createdAt : (new Date()).toISOString().split('.')[0] + 'Z',
+        });
     }
 
     async writeSitemap(sitemap, file) {
@@ -223,7 +201,7 @@ class Generator {
 
         try {
             await this.store.write(file, xml, 'application/xml');
-        } catch (err) {
+        } catch (error) {
             throw (`Failed to write file: ${file}`);
         }
     }
@@ -245,7 +223,7 @@ class Generator {
 
         try {
             await this.store.write(file, html, 'text/html')
-        } catch (err) {
+        } catch (error) {
             throw (`Failed to write file: ${file}`);
         }
     }
@@ -275,7 +253,7 @@ class Generator {
 
         try {
             await this.store.write(file, xml, 'application/atom+xml')
-        } catch (err) {
+        } catch (error) {
             throw (`Failed to write file: ${file}`);
         }
     }
@@ -306,7 +284,7 @@ class Generator {
         );
         try {
             await this.store.write(file, json, 'application/jrd+json');
-        } catch (err) {
+        } catch (error) {
             throw (`Failed to write file: ${file}`);
         }
     }
@@ -342,7 +320,7 @@ class Generator {
         );
         try {
             await this.store.write(file, json, 'application/activity+json');
-        } catch (err) {
+        } catch (error) {
             throw (`Failed to write file: ${file}`);
         }
     }
@@ -370,7 +348,7 @@ class Generator {
         );
         try {
             await this.store.write(file, json, 'application/activity+json');
-        } catch (err) {
+        } catch (error) {
             throw (`Failed to write file: ${file}`);
         }
     }
@@ -437,23 +415,14 @@ class Generator {
                 JSON.stringify(note),
                 {end_with_newline: true},
             );
-            try {
-                writePromises.push(this.store.write(notePath, noteJson, 'application/activity+json'));
-            } catch (err) {
-                throw (`Failed to write file: ${notePath}`);
-            }
+            writePromises.push(this.store.write(notePath, noteJson, 'application/activity+json'));
 
             const createPath = `ap/creates/${post.id}.json`;
             const createJson = beautify.js(
                 JSON.stringify(create),
                 {end_with_newline: true},
             );
-            try {
-                writePromises.push(this.store.write(createPath, createJson, 'application/activity+json'));
-            } catch (err) {
-                throw (`Failed to write file: ${createPath}`);
-            }
-
+            writePromises.push(this.store.write(createPath, createJson, 'application/activity+json'));
         }
 
         const pagePath = `ap/outbox_pages/${currentMonth}.json`;
@@ -461,11 +430,7 @@ class Generator {
             JSON.stringify(page),
             {end_with_newline: true},
         );
-        try {
-            writePromises.push(this.store.write(pagePath, pageJson, 'application/activity+json'));
-        } catch (err) {
-            throw (`Failed to write file: ${pagePath}`);
-        }
+        writePromises.push(this.store.write(pagePath, pageJson, 'application/activity+json'));
 
         await Promise.all(writePromises);
     }
