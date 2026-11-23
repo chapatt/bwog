@@ -18,7 +18,7 @@ program.command('build')
         }
         switch (options.deployment_type) {
         case 'cloudflare-worker':
-            console.log('Building for Cloudflare Worker');
+            console.log('Building for cloudflare-worker');
             await esbuild.build({
                 entryPoints: [resolve(import.meta.dirname, '../src/cloudflare/worker.js')],
                 outfile: './dist/worker.js',
@@ -45,7 +45,7 @@ program.command('build')
             });
             break;
         case 'vps':
-            console.log('Building for VPS');
+            console.log('Building for vps');
             await esbuild.build({
                 entryPoints: [resolve(import.meta.dirname, '../src/app.js')],
                 outfile: './dist/app.js',
@@ -63,7 +63,7 @@ program.command('build')
                 minify: !options.dev,
                 sourcemap: true,
                 loader: {},
-                plugins: [],
+                plugins: [etaLoader],
                 logOverride: {
                     'empty-glob': 'silent',
                 },
