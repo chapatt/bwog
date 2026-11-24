@@ -9,6 +9,18 @@ class SqliteDatabase {
         this.db = new DatabaseSync(this.file);
     }
 
+    async initSchema() {
+        this.db.exec(`
+            CREATE TABLE posts (
+                id TEXT PRIMARY KEY,
+                author TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                type TEXT NOT NULL,
+                content JSONB NOT NULL
+            );
+        `);
+    }
+
     async makeFromJsonDatabase(JsonDatabase) {
         this.db.exec(`
             CREATE TABLE posts (
