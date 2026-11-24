@@ -7,9 +7,12 @@ class JsonDatabase {
     }
 
     async connect() {
+    }
+
+    async _reload() {
         const { default: posts } = await import(this.file, {with: {type: 'json'}});
         this.posts = posts;
-        this.posts.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
+        this.posts.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
     }
 
     async initSchema() {
@@ -17,14 +20,17 @@ class JsonDatabase {
     }
 
     async getAll() {
+        await this._reload();
         return this.posts;
     }
 
     async getLastTwoMonthsAtLeast20() {
+        await this._reload();
         return this.posts;
     }
 
     async createPost(post) {
+        await this._reload();
         this.posts.push(post);
 
         try {
