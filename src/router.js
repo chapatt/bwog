@@ -137,7 +137,18 @@ if (__DEV__) {
     }
 
     if (__DEPLOYMENT_TYPE__ === 'vps') {
-        app.use('/*', (c, next) => serveStatic({root: env(c).PUBLIC_PATH})(c, next));
+        app.use('/*', (c, next) => serveStatic({
+            root: env(c).PUBLIC_PATH,
+            rewriteRequestPath: (path) => {
+                if (path === '/') {
+                    return path;
+                }
+                if (!path.includes('.')) {
+                    return `${path}.html`;
+                }
+                return path;
+            },
+        })(c, next));
     }
 }
 
