@@ -202,7 +202,7 @@ class Generator {
         try {
             await this.store.write(file, xml, 'application/xml');
         } catch (error) {
-            throw (`Failed to write file: ${file}`);
+            throw new Error(`Failed to write file: ${file}`);
         }
     }
 
@@ -224,7 +224,7 @@ class Generator {
         try {
             await this.store.write(file, html, 'text/html')
         } catch (error) {
-            throw (`Failed to write file: ${file}`);
+            throw new Error(`Failed to write file: ${file}`);
         }
     }
 
@@ -254,7 +254,7 @@ class Generator {
         try {
             await this.store.write(file, xml, 'application/atom+xml')
         } catch (error) {
-            throw (`Failed to write file: ${file}`);
+            throw new Error(`Failed to write file: ${file}`);
         }
     }
 
@@ -285,7 +285,7 @@ class Generator {
         try {
             await this.store.write(file, json, 'application/jrd+json');
         } catch (error) {
-            throw (`Failed to write file: ${file}`);
+            throw new Error(`Failed to write file: ${file}`);
         }
     }
 
@@ -321,7 +321,7 @@ class Generator {
         try {
             await this.store.write(file, json, 'application/activity+json');
         } catch (error) {
-            throw (`Failed to write file: ${file}`);
+            throw new Error(`Failed to write file: ${file}`);
         }
     }
 
@@ -349,7 +349,7 @@ class Generator {
         try {
             await this.store.write(file, json, 'application/activity+json');
         } catch (error) {
-            throw (`Failed to write file: ${file}`);
+            throw new Error(`Failed to write file: ${file}`);
         }
     }
 

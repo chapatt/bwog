@@ -12,6 +12,10 @@ class JsonDatabase {
         this.posts.sort((a, b) => a.createdAt > b.createdAt ? -1 : (a.createdAt < b.createdAt ? 1 : 0));
     }
 
+    async initSchema() {
+        return Promise.resolve();
+    }
+
     async getAll() {
         return this.posts;
     }
@@ -30,7 +34,7 @@ class JsonDatabase {
             );
             fs.writeFileSync(this.file, json);
         } catch (err) {
-            throw (`Failed to write file: ${this.file}`);
+            throw new Error(`Failed to write file: ${this.file}`);
         }
     }
 }

@@ -6,10 +6,12 @@ import router from '../router';
 
 const app = new Hono();
 
-app.use((c, next) => {
+app.use(async (c, next) => {
     const store = new R2Store(c.env.STORE);
     const stub = c.env.DATABASE.getByName('blog-posts');
     const database = new DurableObjectDatabase(stub);
+    await database.connect();
+
     c.set('store', store);
     c.set('database', database);
 

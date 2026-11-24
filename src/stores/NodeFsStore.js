@@ -7,7 +7,11 @@ class NodeFsStore {
     }
 
     async write(file, data, mimeType) {
-        fs.writeFileSync(path.resolve(this.outputDir, `${file}${mimeType === 'text/html' ? '.html' : ''}`), data);
+        let buffer = data;
+        if (data instanceof File) {
+            buffer = Buffer.from(await data.arrayBuffer());
+        }
+        fs.writeFileSync(path.resolve(this.outputDir, `${file}${mimeType === 'text/html' ? '.html' : ''}`), buffer);
     }
 }
 

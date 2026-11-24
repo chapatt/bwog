@@ -9,19 +9,11 @@ export function handler(type, content) {
     }
 
     if (transformer.schema) {
-        try {
-            content = transformer.schema.parse(content);
-        } catch (error) {
-            throw new Error('Bad Request: Invalid post.');
-        }
+        content = transformer.schema.parse(content);
     }
 
     if (transformer.handler) {
-        try {
-            content = transformer.handler(content);
-        } catch (error) {
-            throw new Error('Bad Request: Invalid post.');
-        }
+        content = transformer.handler(content);
     }
 
     return content;
